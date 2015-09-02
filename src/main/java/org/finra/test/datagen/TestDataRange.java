@@ -1,5 +1,6 @@
 package org.finra.test.datagen;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -20,8 +21,8 @@ public class TestDataRange {
     public List<String> getFirms() {
         return this.firms;
     }
-    public TestDataRange withFirms(List<String> firms) {
-        this.firms = firms;
+    public TestDataRange withFirms(String... firms) {
+        this.firms = Arrays.asList(firms);
         return this;
     }
 
