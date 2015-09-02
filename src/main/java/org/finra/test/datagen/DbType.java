@@ -33,4 +33,8 @@ public enum DbType {
 				return DbType.Varchar;
 		}
 	}
+
+    public boolean needsEscape() {
+        return this==DbType.Date || this == DbType.Timestamp || this==DbType.Varchar;
+    }
 }
