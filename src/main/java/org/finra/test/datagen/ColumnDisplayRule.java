@@ -1,5 +1,6 @@
 package org.finra.test.datagen;
 
+
 import java.util.List;
 import java.util.Map;
 
@@ -7,6 +8,7 @@ import java.util.Map;
  * Created on 9/1/2015.
  */
 public class ColumnDisplayRule {
+	//region display rules
 	@FieldMapping(ColumnHeader = "Field Type")
 	public RecordType recordType;
 	@FieldMapping(ColumnHeader = "Source Table Name")
@@ -43,4 +45,8 @@ public class ColumnDisplayRule {
 	public String comments;
 	@FieldMapping(ColumnHeader ="Help Text")
 	public String helpText;
+	//endregion
+
+
+
 }
