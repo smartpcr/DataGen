@@ -1,9 +1,9 @@
 WITH crb AS (
-  SELECT ns_cstmr_id
+  SELECT DISTINCT ns_cstmr_id
   FROM
     firm_dm
   WHERE
-    firm_mp_id IN (@firms)
+    firm_mp_id IN @firms
 )
 SELECT
   t1.firm_mp_id,

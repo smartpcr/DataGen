@@ -88,9 +88,11 @@ public class ExcelUtil {
 				for(String fieldName : columnIndexes.keySet()) {
 					int cellIndex = columnIndexes.get(fieldName);
 					Cell dataCell = dataRow.createCell(cellIndex);
-					if(row.containsKey(fieldName)){
+					if(dataCell!=null && row.containsKey(fieldName)){
 						Object cellValue = row.get(fieldName);
-						dataCell.setCellValue(cellValue.toString());
+						if(cellValue != null) {
+							dataCell.setCellValue(cellValue.toString());
+						}
 					}
 				}
 				rowIndex++;

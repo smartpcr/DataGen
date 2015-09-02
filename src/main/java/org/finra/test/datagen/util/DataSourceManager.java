@@ -27,7 +27,7 @@ public class DataSourceManager {
 			String url = th.getProperty(urlPropName);
 			String userPropName = String.format("%s.user", dataSourceName);
 			String user = th.getProperty(userPropName);
-			String pwdPropName = String.format("%s.password", dataSourceName);
+			String pwdPropName = String.format("%s.pwd", dataSourceName);
 			String pwd = th.getProperty(pwdPropName);
 			DbConnection dbConn=new DbConnection(driverClass, url, user, pwd);
 			dbConnections.put(dataSourceName, dbConn);
