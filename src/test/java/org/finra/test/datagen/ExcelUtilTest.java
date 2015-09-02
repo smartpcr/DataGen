@@ -70,7 +70,7 @@ public class ExcelUtilTest {
 
 	@Test
 	public void canWriteExcel() {
-		final String filePath = "C:\\test.xlsx";
+		final String filePath = "test.xlsx";
 		final String sheetName = "sheet1";
 		List<Map<String, Object>> table = new ArrayList<Map<String, Object>>();
 		Map<String, Class> columns = new HashMap<String, Class>();
@@ -96,7 +96,7 @@ public class ExcelUtilTest {
 			assertNotNull(table2);
 			assertEquals(table.size(), table2.size());
 
-			//file.delete();
+			file.delete();
 		}
 		catch (Exception e) {
 			fail(e.getMessage());
