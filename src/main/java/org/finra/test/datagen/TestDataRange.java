@@ -52,4 +52,22 @@ public class TestDataRange {
         this.relatedFirms = relatedFirms;
         return this;
     }
+
+	private long lastFirmOrderId = 99900082;
+	public long getLastFirmOrderId() {
+	    return this.lastFirmOrderId;
+	}
+	public TestDataRange withLastFirmOrderId(long lastFirmOrderId) {
+	    this.lastFirmOrderId = lastFirmOrderId;
+	    return this;
+	}
+
+	private long lastExchangeOrderId = 9533198;
+	public long getLastExchangeOrderId() {
+	    return this.lastExchangeOrderId;
+	}
+	public TestDataRange withLastExchangeOrderId(long lastExchangeOrderId) {
+	    this.lastExchangeOrderId = lastExchangeOrderId;
+	    return this;
+	}
 }

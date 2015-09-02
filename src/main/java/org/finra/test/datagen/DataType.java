@@ -28,7 +28,7 @@ public class DataType {
 				dataType.size = Integer.parseInt(m.group(1));
 			}
 		}
-		if(input.toLowerCase().startsWith("decimal")) {
+		else if(input.toLowerCase().startsWith("decimal")) {
 			dataType.dbType = DbType.Decimal;
 			Matcher m = decimalPattern.matcher(input);
 			if(m.find()){
@@ -36,22 +36,31 @@ public class DataType {
 				dataType.scale = Integer.parseInt(m.group(1));
 			}
 		}
-		switch (input.toLowerCase()){
-			case "bigint":
-				dataType.dbType =  DbType.BigInt;
-			case "date":
-				dataType.dbType =  DbType.Date;
-			case "int":
-				dataType.dbType =  DbType.Int;
-			case "timestamp":
-				dataType.dbType =  DbType.Timestamp;
-			case "decimal":
-				dataType.dbType =  DbType.Decimal;
-			case "string":
-			default:
-				dataType.dbType =  DbType.Varchar;
+		else {
+			switch (input.toLowerCase()){
+				case "bigint":
+					dataType.dbType =  DbType.BigInt;
+					break;
+				case "date":
+				case "datefield":
+					dataType.dbType =  DbType.Date;
+					break;
+				case "int":
+					dataType.dbType =  DbType.Int;
+					break;
+				case "timestamp":
+				case "time only":
+					dataType.dbType =  DbType.Timestamp;
+					break;
+				case "decimal":
+					dataType.dbType =  DbType.Decimal;
+					break;
+				case "string":
+				default:
+					dataType.dbType =  DbType.Varchar;
+					break;
+			}
 		}
-
 		return dataType;
 	}
 }

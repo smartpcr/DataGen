@@ -1,6 +1,7 @@
 package org.finra.test.datagen.util;
 
 import com.google.common.base.Strings;
+import com.sun.corba.se.impl.interceptors.CDREncapsCodec;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.finra.test.datagen.*;
 
@@ -55,8 +56,13 @@ public class DisplayRuleUtil {
 			List<Map<String, Object>> table = ExcelUtil.readSheetAsTable(filePath, sheetName);
 			List<ColumnDisplayRule> displayRules = new ArrayList<>();
 			for(Map<String, Object> row : table) {
-				displayRules.add(readDisplayRule(row));
+				ColumnDisplayRule displayRule = readDisplayRule(row);
+				if(displayRule.displayOrder>0) {
+					displayRules.add(readDisplayRule(row));
+				}
 			}
+
+			displayRules.addAll(getAdditionalTextColumns(version));
 			displayRulesByVersions.put(version, displayRules);
 			return displayRules;
 		}
@@ -70,8 +76,8 @@ public class DisplayRuleUtil {
 			if(row.containsKey(header)){
 				Object fieldValue = row.get(header);
 				Field field = mappings.get(header);
-				if(field.getType() == String.class) {
-					field.set(displayRule, fieldValue);
+				if(field.getType() == String.class && fieldValue!=null) {
+					field.set(displayRule, fieldValue.toString().trim());
 				}
 				else if(fieldValue!=null && fieldValue.toString().trim().length()>0){
 					switch (field.getName()){
@@ -97,7 +103,7 @@ public class DisplayRuleUtil {
 							displayRule.diverDataType = DataType.parseDataType(fieldValue.toString());
 							break;
 						case "fieldValueList":
-							displayRule.fieldValueList = Arrays.asList(fieldValue.toString().split(","));
+							displayRule.fieldValueList = Arrays.asList(fieldValue.toString().split("\\s*,\\s*"));
 							break;
 						case "derivedField":
 							displayRule.derivedField = fieldValue.toString().equals("Y");
@@ -159,5 +165,27 @@ public class DisplayRuleUtil {
 
 	private static int parseInt(String input) {
 		return (int)Math.floor(Double.parseDouble(input));
+	}
+
+	private static List<ColumnDisplayRule> getAdditionalTextColumns(int version) {
+		Integer displayOrder = 1000;
+		List<ColumnDisplayRule> textColumns = new ArrayList<>();
+		textColumns.add(createTextColumnDisplayRule("cmn_clmn_data_tx", displayOrder));
+		textColumns.add(createTextColumnDisplayRule("fo_clmn_data_tx", displayOrder));
+		textColumns.add(createTextColumnDisplayRule("eo_clmn_data_tx", displayOrder));
+		if(version== LatestVersion) {
+			textColumns.add(createTextColumnDisplayRule("oet_clmn_data_tx", displayOrder));
+		}
+		return textColumns;
+	}
+
+	private static ColumnDisplayRule createTextColumnDisplayRule(String fieldName, Integer displayOrder) {
+		ColumnDisplayRule rule = new ColumnDisplayRule();
+		rule.diverFieldName = fieldName;
+		rule.displayOrder = ++displayOrder;
+		rule.diverDataType = new DataType();
+		rule.diverDataType.size=100;
+		rule.recordType = RecordType.Unknown;
+		return rule;
 	}
 }

@@ -1,6 +1,7 @@
 package org.finra.test.datagen.rule;
 
 import org.finra.test.datagen.RecordType;
+import org.finra.test.datagen.TestDataRange;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,7 +20,13 @@ public class RowContext {
         return this.recordType;
     }
     public void setRecordType(RecordType recordType) {
-        this.recordType = recordType;
+	    this.recordType = recordType;
+	    if(this.recordType == RecordType.FirmOrder){
+		    this.lastFirmOrderId++;
+	    }
+	    else if(this.recordType == RecordType.ExchangeOrder){
+		    this.lastExchangeOrderId++;
+	    }
     }
 
     private String symbol;
@@ -62,14 +69,28 @@ public class RowContext {
         this.memberId = memberId;
     }
 
-	public RowContext(int totalRowCount) {
+	private long lastFirmOrderId;
+	public long getLastFirmOrderId() {
+		return this.lastFirmOrderId;
+	}
+
+	private long lastExchangeOrderId;
+	public long getLastExchangeOrderId() {
+		return this.lastExchangeOrderId;
+	}
+
+	public RowContext(int totalRowCount, TestDataRange range) {
 		this.rowIndex = -1;
+		this.lastExchangeOrderId = range.getLastExchangeOrderId();
+		this.lastFirmOrderId = range.getLastFirmOrderId();
 		this.totalRowCount = totalRowCount;
 	}
 
 	public boolean next() {
 		if(this.totalRowCount>rowIndex+1){
 			this.rowIndex++;
+//			this.lastExchangeOrderId++;
+//			this.lastFirmOrderId++;
 			return true;
 		}
 		return false;

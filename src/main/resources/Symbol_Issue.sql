@@ -1,18 +1,18 @@
 WITH issueIds AS (
   SELECT issue_id
   FROM symbol_dm
-  WHERE issue_symbol_id=@symbolId
+  WHERE issue_sym_id=@symbol
   UNION
   SELECT issue_id
   FROM issue_ref
   WHERE
-    xchng_sym_id=@symbolId
-    OR trd_sym_id=@symbolId
-    OR sisc_sym_id=@symbolId
-    OR oats_rptng_sym_id=@symbolId
-    OR nyse_sym_id=@symbolId
-    OR arca_sym_id=@symbolId
-    OR cms_dot_dlmtd_sym_id=@symbolId
+    xchng_sym_id=@symbol
+    OR trd_sym_id=@symbol
+    OR siac_sym_id=@symbol
+    OR oats_rptng_sym_id=@symbol
+    OR nyse_sym_id=@symbol
+    OR arca_sym_id=@symbol
+    OR cms_dot_dlmtd_sym_id=@symbol
 )
 SELECT
   s.issue_id,
