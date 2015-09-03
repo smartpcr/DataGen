@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import static org.finra.test.datagen.RecordType.*;
 import static org.junit.Assert.*;
 
 /**
@@ -49,7 +50,7 @@ public class DataGenTest {
                     nonEmptyFieldCount++;
                 }
             }
-            assertTrue(nonEmptyFieldCount>50);
+            assertTrue(nonEmptyFieldCount > 50);
 
 	        final String filePath = "out/test_data.xlsx";
 	        final String sheetName = String.format("%s_%d", "tstanalyst1", 100008);
@@ -60,6 +61,59 @@ public class DataGenTest {
 	        List<Map<String, Object>> table2 = ExcelUtil.readSheetAsTable(filePath, sheetName);
 	        assertNotNull(table2);
 	        assertEquals(table.size(), table2.size());
+	        List<ColumnDisplayRule> displayRules = DisplayRuleUtil.readDisplayRules();
+	        int recordIdx = 0;
+	        for(Map<String, Object> record : table2) {
+		        recordIdx++;
+		        System.out.println("\nrecord #" + recordIdx);
+
+		        int concatedCommonFieldSize = 0;
+		        int concatedFirmOrderFieldSize = 0;
+		        int concatedExchangeOrderFieldSize = 0;
+		        int concatedOffExchangeTradeFieldSize = 0;
+		        for(ColumnDisplayRule rule : displayRules){
+			        if(record.containsKey(rule.diverFieldName)) {
+				        Object value = record.get(rule.diverFieldName);
+				        if(value!=null) {
+					        if(rule.diverDataType!=null && rule.diverDataType.dbType==DbType.Varchar){
+						        int allowedSize = rule.diverDataType.size;
+						        if(value.toString().length()>allowedSize){
+							        System.out.println(String.format(
+								        "field [%s] value '%s' is exceed its allowed length: %d",
+								        rule.diverFieldName, value, allowedSize));
+						        }
+					        }
+					        switch (rule.recordType){
+						        case Common:
+							        concatedCommonFieldSize += value.toString().length();
+							        break;
+						        case FirmOrder:
+							        concatedFirmOrderFieldSize += value.toString().length();
+							        break;
+						        case ExchangeOrder:
+							        concatedExchangeOrderFieldSize += value.toString().length();
+							        break;
+						        case OffExchangeTrade:
+							        concatedOffExchangeTradeFieldSize += value.toString().length();
+							        break;
+					        }
+				        }
+			        }
+		        }
+
+		        if(concatedCommonFieldSize>1000) {
+			        System.out.println("concatenated text for common fields exceed 1000 limit: " + concatedCommonFieldSize);
+		        }
+		        if(concatedFirmOrderFieldSize>1000) {
+			        System.out.println("concatenated text for fo fields exceed 1000 limit: " + concatedFirmOrderFieldSize);
+		        }
+		        if(concatedExchangeOrderFieldSize>1000) {
+			        System.out.println("concatenated text for eo fields exceed 1000 limit: " + concatedExchangeOrderFieldSize);
+		        }
+		        if(concatedOffExchangeTradeFieldSize>1000) {
+			        System.out.println("concatenated text for oet fields exceed 1000 limit: " + concatedOffExchangeTradeFieldSize);
+		        }
+	        }
         }
         catch (Exception e){
             fail(e.getMessage());
