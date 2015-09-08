@@ -1,14 +1,17 @@
 package org.finra.test.datagen;
 
+import org.apache.xmlbeans.impl.common.ConcurrentReaderHashMap;
 import org.finra.test.datagen.util.DisplayRuleUtil;
 import org.finra.test.datagen.util.ExcelUtil;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.finra.test.datagen.DbType.*;
 import static org.finra.test.datagen.RecordType.*;
 import static org.junit.Assert.*;
 
@@ -62,6 +65,42 @@ public class DataGenTest {
 	        assertNotNull(table2);
 	        assertEquals(table.size(), table2.size());
 	        List<ColumnDisplayRule> displayRules = DisplayRuleUtil.readDisplayRules();
+	        Map<RecordType, Integer> maxSizes = new HashMap();
+	        for(ColumnDisplayRule displayRule : displayRules) {
+
+		        if (displayRule.diverDataType != null && displayRule.diverDataType.dbType!=null) {
+			        int maxStringSize = 0;
+			        switch (displayRule.diverDataType.dbType) {
+				        case BigInt:
+					        maxStringSize = 19;
+					        break;
+				        case Date:
+					        maxStringSize = 10;
+					        break;
+				        case Int:
+					        maxStringSize = 10;
+					        break;
+				        case Timestamp:
+					        maxStringSize = 26;
+					        break;
+				        case Decimal:
+					        maxStringSize = displayRule.diverDataType.precision;
+					        break;
+				        default:
+					        maxStringSize = displayRule.diverDataType.size;
+					        break;
+			        }
+			        if (maxSizes.containsKey(displayRule.recordType)) {
+				        maxSizes.put(displayRule.recordType, maxSizes.get(displayRule.recordType) + maxStringSize);
+			        } else {
+				        maxSizes.put(displayRule.recordType, maxStringSize);
+			        }
+		        }
+	        }
+	        for(RecordType recType : maxSizes.keySet()){
+		        System.out.println(String.format("%s: \t%d", recType.toString(), maxSizes.get(recType)));
+	        }
+
 	        int recordIdx = 0;
 	        for(Map<String, Object> record : table2) {
 		        recordIdx++;
@@ -75,7 +114,7 @@ public class DataGenTest {
 			        if(record.containsKey(rule.diverFieldName)) {
 				        Object value = record.get(rule.diverFieldName);
 				        if(value!=null) {
-					        if(rule.diverDataType!=null && rule.diverDataType.dbType==DbType.Varchar){
+					        if(rule.diverDataType!=null && rule.diverDataType.dbType== Varchar){
 						        int allowedSize = rule.diverDataType.size;
 						        if(value.toString().length()>allowedSize){
 							        System.out.println(String.format(
