@@ -82,15 +82,14 @@ public class DataGenerator {
         if(displayRule.filterType == FilterType.SelectList &&
             displayRule.fieldValueList!=null &&
             displayRule.fieldValueList.size()>0) {
-
-            int idx = random.nextInt(displayRule.fieldValueList.size());
-            String value = displayRule.fieldValueList.get(idx);
-            value = value.equalsIgnoreCase("blank")? null : value;
+	        int idx = random.nextInt(displayRule.fieldValueList.size());
+	        String value = displayRule.fieldValueList.get(idx);
+	        value = value.equalsIgnoreCase("blank")? null : value;
+	        if(displayRule.diverFieldName.equals("cmn_rec_type")) {
+		        RecordType recordType = rowContext.getRecordType();
+		        value = recordType.toString();
+	        }
             record.put(displayRule.diverFieldName, value);
-            if(displayRule.diverFieldName.equals("cmn_rec_type")) {
-                RecordType recordType = fromString(value);
-                rowContext.setRecordType(recordType);
-            }
             isValueSet = true;
         }
         else if(displayRule.diverFieldName.toLowerCase().endsWith("sym_id")){
@@ -311,6 +310,13 @@ public class DataGenerator {
 		}
 		else if(displayRule.diverFieldName.equalsIgnoreCase("eo_rec_unique_id")){
 			String value ="J_2015-02-11_1D1KT400NE4Z_NW_" + String.valueOf(context.getLastExchangeOrderId());
+			if(value.length()>size){
+				value = value.substring(value.length()-size);
+			}
+			record.put(displayRule.diverFieldName, value);
+		}
+		else if(displayRule.diverFieldName.equalsIgnoreCase("oet_rec_unique_id")){
+			String value = String.valueOf(context.getLastOffExchangeTradeId());
 			if(value.length()>size){
 				value = value.substring(value.length()-size);
 			}
