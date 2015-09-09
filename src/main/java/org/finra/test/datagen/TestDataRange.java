@@ -53,6 +53,15 @@ public class TestDataRange {
         return this;
     }
 
+    private List<RecordType> recordTypes;
+    public List<RecordType> getRecordTypes() {
+    	return this.recordTypes;
+    }
+    public TestDataRange withRecordTypes(List<RecordType> recordTypes) {
+        this.recordTypes = recordTypes;
+        return this;
+    }
+
 	private long lastFirmOrderId = 99900082;
 	public long getLastFirmOrderId() {
 	    return this.lastFirmOrderId;

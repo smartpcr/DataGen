@@ -16,6 +16,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
+import static org.finra.test.datagen.RecordType.Common;
 import static org.finra.test.datagen.RecordType.fromString;
 
 /**
@@ -38,38 +39,31 @@ public class DataGenerator {
         List<Map<String, Object>> table = new ArrayList<>();
         ReferenceData refData = new ReferenceData(range);
         while (context.next()) {
-            context.reset();
             Map<String, Object> record = new LinkedHashMap<>();
             for(ColumnDisplayRule displayRule : displayRules){
-	            if(displayRule.recordType!=RecordType.Artificial){
-		            record.put(displayRule.diverFieldName, null);
-	            }
-	            RecordType recordType = context.getRecordType();
-
-	            if(displayRule.recordType != RecordType.Common) {
-		            if(displayRule.recordType == RecordType.Artificial ||
-			            displayRule.recordType != recordType) {
-			            continue;
-		            }
-	            }
-
-                boolean isValueSet = checkPickListAndReferenceData(record, context, refData, displayRule);
-                if(isValueSet)
-                    continue;
-                isValueSet = copyValue(record, displayRule, context);
-                if(isValueSet)
-                    continue;
-	            isValueSet = applySequenceAndUniqueValues(record, displayRule, context);
-	            if(isValueSet)
+	            if(displayRule.recordType==RecordType.Artificial)
 		            continue;
-	            isValueSet = applyFormat(record, displayRule, range);
-	            if(isValueSet)
-		            continue;
-                isValueSet = applyRandomValue(record, displayRule, context);
-                if(isValueSet)
-                    continue;
-                else {
-                    System.out.println(displayRule.diverFieldName);
+
+                record.put(displayRule.diverFieldName, null);
+	            if(displayRule.recordType == Common || displayRule.recordType==context.getRecordType()){
+                    boolean isValueSet = checkPickListAndReferenceData(record, context, refData, displayRule);
+                    if(isValueSet)
+                        continue;
+                    isValueSet = copyValue(record, displayRule, context);
+                    if(isValueSet)
+                        continue;
+                    isValueSet = applySequenceAndUniqueValues(record, displayRule, context);
+                    if(isValueSet)
+                        continue;
+                    isValueSet = applyFormat(record, displayRule, range);
+                    if(isValueSet)
+                        continue;
+                    isValueSet = applyRandomValue(record, displayRule, context);
+                    if(isValueSet)
+                        continue;
+                    else {
+                        System.out.println(displayRule.diverFieldName);
+                    }
                 }
             }
             table.add(record);

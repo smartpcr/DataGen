@@ -71,6 +71,12 @@ public class ExcelUtil {
 		throws IOException, InvalidFormatException {
 		Workbook workbook = ensureExcelFile(filePath);
 		Sheet sheet = ensureSheet(workbook, sheetName);
+        if(sheet.getLastRowNum()>0){
+            for(Row row: sheet){
+                sheet.removeRow(row);
+            }
+        }
+
 		Map<String, Integer> columnIndexes = new HashMap<String, Integer>();
 		if(table.size()>0) {
 			Map<String, Object> firstRow = table.get(0);
@@ -102,6 +108,48 @@ public class ExcelUtil {
 		workbook.write(fileOut);
 		fileOut.close();
 	}
+
+    public static void writeSheet2(String filePath, String sheetName, List<Map<String, String>> table)
+        throws IOException, InvalidFormatException {
+        Workbook workbook = ensureExcelFile(filePath);
+        Sheet sheet = ensureSheet(workbook, sheetName);
+        if(sheet.getLastRowNum()>0){
+            for(Row row: sheet){
+                sheet.removeRow(row);
+            }
+        }
+
+        Map<String, Integer> columnIndexes = new HashMap<String, Integer>();
+        if(table.size()>0) {
+            Map<String, String> firstRow = table.get(0);
+            Row headerRow = sheet.createRow(0);
+            int colIndex = 0;
+            for(String colHeader : firstRow.keySet()) {
+                columnIndexes.put(colHeader, colIndex);
+                Cell headerCell = headerRow.createCell(colIndex);
+                headerCell.setCellValue(colHeader);
+                colIndex++;
+            }
+            int rowIndex = 1;
+            for(Map<String, String> row : table) {
+                Row dataRow = sheet.createRow(rowIndex);
+                for(String fieldName : columnIndexes.keySet()) {
+                    int cellIndex = columnIndexes.get(fieldName);
+                    Cell dataCell = dataRow.createCell(cellIndex);
+                    if(dataCell!=null && row.containsKey(fieldName)){
+                        String cellValue = row.get(fieldName);
+                        if(cellValue != null) {
+                            dataCell.setCellValue(cellValue);
+                        }
+                    }
+                }
+                rowIndex++;
+            }
+        }
+        OutputStream fileOut = new FileOutputStream(filePath);
+        workbook.write(fileOut);
+        fileOut.close();
+    }
 
 	private static Workbook ensureExcelFile(String filePath)
 		throws IOException, InvalidFormatException {
