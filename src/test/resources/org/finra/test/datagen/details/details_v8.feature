@@ -1,6 +1,7 @@
 @Details @Data
-Feature: Generate staged data for details page for version 8 (N)
+Feature: Generate staged data for details page for version-8
 
+  @ignore
   Scenario Outline: stage test data for user mart
     Given search parameters
       | Field                  | Value                    |

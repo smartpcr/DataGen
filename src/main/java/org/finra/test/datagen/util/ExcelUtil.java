@@ -71,11 +71,11 @@ public class ExcelUtil {
 		throws IOException, InvalidFormatException {
 		Workbook workbook = ensureExcelFile(filePath);
 		Sheet sheet = ensureSheet(workbook, sheetName);
-        if(sheet.getLastRowNum()>0){
-            for(Row row: sheet){
-                sheet.removeRow(row);
-            }
-        }
+//        if(sheet.getLastRowNum()>0){
+//            for(Row row: sheet){
+//                sheet.removeRow(row);
+//            }
+//        }
 
 		Map<String, Integer> columnIndexes = new HashMap<String, Integer>();
 		if(table.size()>0) {
@@ -113,11 +113,11 @@ public class ExcelUtil {
         throws IOException, InvalidFormatException {
         Workbook workbook = ensureExcelFile(filePath);
         Sheet sheet = ensureSheet(workbook, sheetName);
-        if(sheet.getLastRowNum()>0){
-            for(Row row: sheet){
-                sheet.removeRow(row);
-            }
-        }
+//        if(sheet.getLastRowNum()>0){
+//            for(Row row: sheet){
+//                sheet.removeRow(row);
+//            }
+//        }
 
         Map<String, Integer> columnIndexes = new HashMap<String, Integer>();
         if(table.size()>0) {
