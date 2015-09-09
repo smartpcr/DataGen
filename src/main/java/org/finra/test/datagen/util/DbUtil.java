@@ -2,10 +2,11 @@ package org.finra.test.datagen.util;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.poi.ss.formula.functions.T;
-import org.finra.test.datagen.ReferenceData;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +15,26 @@ import java.util.Map;
 /**
  * Created on 9/1/2015.
  */
-public class DbReader {
+public class DbUtil {
+    public static void executeNonQuery(DbConnection dbConn, String sql) throws SQLException {
+        Connection connection = getConnection(dbConn);
+        try {
+            Statement stmt = connection.createStatement();
+            stmt.executeQuery(sql);
+        }
+        catch (SQLException sqlEx){
+            throw new RuntimeException("Unable to query DB", sqlEx);
+        }
+        finally {
+            if(connection != null){
+                try {
+                    connection.close();
+                }
+                catch (Throwable ignored){}
+            }
+        }
+    }
+
 	public static List<Map<String, Object>> readTable(DbConnection conn, String schemaName, String tableName)
 		throws SQLException {
 		List<Map<String, Object>> table = new ArrayList<>();
@@ -112,5 +132,28 @@ public class DbReader {
         ds.setUrl(conn.getHost());
         Connection connection = ds.getConnection();
         return connection;
+    }
+
+    public static int readScalar(DbConnection dbConn, String sql) throws SQLException {
+        Connection connection = getConnection(dbConn);
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet rset = stmt.executeQuery(sql);
+            if(rset.next()){
+                return rset.getInt(0);
+            }
+            throw new RuntimeException("No result result from scalar sql " + sql);
+        }
+        catch (SQLException sqlEx){
+            throw new RuntimeException("Unable to query DB", sqlEx);
+        }
+        finally {
+            if(connection != null){
+                try {
+                    connection.close();
+                }
+                catch (Throwable ignored){}
+            }
+        }
     }
 }

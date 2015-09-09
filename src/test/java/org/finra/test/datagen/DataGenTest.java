@@ -1,9 +1,9 @@
 package org.finra.test.datagen;
 
-import org.apache.xmlbeans.impl.common.ConcurrentReaderHashMap;
 import org.finra.test.datagen.util.DisplayRuleUtil;
 import org.finra.test.datagen.util.ExcelUtil;
 import org.joda.time.DateTime;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -11,13 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.finra.test.datagen.DbType.*;
-import static org.finra.test.datagen.RecordType.*;
+import static org.finra.test.datagen.DbType.Varchar;
 import static org.junit.Assert.*;
 
 /**
  * Created on 9/1/2015.
  */
+@Ignore
 public class DataGenTest {
 	@Test
 	public void canReadRule() {
@@ -150,7 +150,7 @@ public class DataGenTest {
 			        System.out.println("concatenated text for eo fields exceed 1000 limit: " + concatedExchangeOrderFieldSize);
 		        }
 		        if(concatedOffExchangeTradeFieldSize>1000) {
-			        System.out.println("concatenated text for oet fields exceed 1000 limit: " + concatedOffExchangeTradeFieldSize);
+			        System.out.println("concatenated text for dmapi.details fields exceed 1000 limit: " + concatedOffExchangeTradeFieldSize);
 		        }
 	        }
         }

@@ -3,10 +3,7 @@ package org.finra.test.datagen.rule;
 import org.finra.test.datagen.RecordType;
 import org.finra.test.datagen.TestDataRange;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created on 9/1/2015.
@@ -14,6 +11,7 @@ import java.util.Map;
 public class RowContext {
 	private int rowIndex;
 	private int totalRowCount;
+    private List<RecordType> allowedRecordTypes;
 
     private RecordType recordType;
     public RecordType getRecordType() {
@@ -77,6 +75,7 @@ public class RowContext {
 
 	public RowContext(int totalRowCount, TestDataRange range) {
 		this.rowIndex = -1;
+        this.allowedRecordTypes = range.getRecordTypes();
 		this.lastExchangeOrderId = range.getLastExchangeOrderId();
 		this.lastFirmOrderId = range.getLastFirmOrderId();
 		this.lastOffExchangeTradeId = range.getLastOffExchangeTradeId();
@@ -84,7 +83,8 @@ public class RowContext {
 	}
 
 	public boolean next() {
-		this.recordType = RecordType.random();
+        this.reset();
+		this.recordType = this.nextRecordType();
 		if(this.totalRowCount>rowIndex+1){
 			this.rowIndex++;
 			switch (this.recordType){
@@ -103,8 +103,32 @@ public class RowContext {
 		return false;
 	}
 
-    public void reset() {
-        this.recordType = RecordType.Unknown;
+    public static RecordType fromString(String value) {
+        switch (value.toLowerCase()) {
+            case "artificial":
+                return RecordType.Artificial;
+            case "common":
+                return RecordType.Common;
+            case "firm order":
+                return RecordType.FirmOrder;
+            case "exchange order":
+                return RecordType.ExchangeOrder;
+            case "off exchange trade":
+                return RecordType.OffExchangeTrade;
+            case "derived":
+                return RecordType.Derived;
+            default:
+                return RecordType.Unknown;
+        }
+    }
+
+    static Random random = new Random(System.currentTimeMillis());
+    private RecordType nextRecordType() {
+        int i = random.nextInt() % this.allowedRecordTypes.size();
+        return this.allowedRecordTypes.get(i);
+    }
+
+    private void reset() {
         this.symbol = null;
         this.issueId = 0;
         this.firm=null;

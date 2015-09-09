@@ -3,19 +3,14 @@ package org.finra.test.datagen;
 import com.google.common.base.Strings;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.io.FileUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.finra.test.datagen.util.DataSourceManager;
 import org.finra.test.datagen.util.DbConnection;
-import org.finra.test.datagen.util.DbReader;
+import org.finra.test.datagen.util.DbUtil;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by xd on 9/2/2015.
@@ -49,7 +44,7 @@ public class ReferenceData {
         if(!Strings.isNullOrEmpty(symbol)) {
             String sql = readAllText("Symbol_Issue.sql");
             sql = sql.replace("@symbol", "'" + symbol + "'");
-            this.symbolIssues = DbReader.readList(dbConn, sql, symbolIssueTupleResultSetHandler);
+            this.symbolIssues = DbUtil.readList(dbConn, sql, symbolIssueTupleResultSetHandler);
         }
         List<String> firms = this.range.getFirms();
         if(firms!=null && firms.size()>0){
@@ -65,20 +60,20 @@ public class ReferenceData {
             if(relatedFirms){
                 String sql = readAllText("Firm_Crb_Mbr_Related.sql");
                 sql = sql.replace("@firms", inFirms);
-                this.firmCrdMembers = DbReader.readList(dbConn, sql, firmCrdMemberTupleResultSetHandler);
+                this.firmCrdMembers = DbUtil.readList(dbConn, sql, firmCrdMemberTupleResultSetHandler);
 
                 String sql2 = readAllText("Firm_Crb_Related.sql");
                 sql2 = sql2.replace("@firms", inFirms);
-                this.firmCrds = DbReader.readList(dbConn, sql2, firmCrdTupleResultSetHandler);
+                this.firmCrds = DbUtil.readList(dbConn, sql2, firmCrdTupleResultSetHandler);
             }
             else {
                 String sql = readAllText("Firm_Crb_Mbr.sql");
                 sql = sql.replace("@firms", inFirms);
-                this.firmCrdMembers = DbReader.readList(dbConn, sql, firmCrdMemberTupleResultSetHandler);
+                this.firmCrdMembers = DbUtil.readList(dbConn, sql, firmCrdMemberTupleResultSetHandler);
 
                 String sql2 = readAllText("Firm_Crb.sql");
                 sql2 = sql2.replace("@firms", inFirms);
-                this.firmCrds = DbReader.readList(dbConn, sql2, firmCrdTupleResultSetHandler);
+                this.firmCrds = DbUtil.readList(dbConn, sql2, firmCrdTupleResultSetHandler);
             }
         }
     }
