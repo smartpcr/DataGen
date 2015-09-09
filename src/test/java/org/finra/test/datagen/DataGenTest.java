@@ -150,7 +150,7 @@ public class DataGenTest {
 			        System.out.println("concatenated text for eo fields exceed 1000 limit: " + concatedExchangeOrderFieldSize);
 		        }
 		        if(concatedOffExchangeTradeFieldSize>1000) {
-			        System.out.println("concatenated text for dmapi.details fields exceed 1000 limit: " + concatedOffExchangeTradeFieldSize);
+			        System.out.println("concatenated text for oet fields exceed 1000 limit: " + concatedOffExchangeTradeFieldSize);
 		        }
 	        }
         }
