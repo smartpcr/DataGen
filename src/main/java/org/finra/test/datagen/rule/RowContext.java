@@ -124,7 +124,7 @@ public class RowContext {
 
     static Random random = new Random(System.currentTimeMillis());
     private RecordType nextRecordType() {
-        int i = random.nextInt() % this.allowedRecordTypes.size();
+        int i = random.nextInt(this.allowedRecordTypes.size());
         return this.allowedRecordTypes.get(i);
     }
 

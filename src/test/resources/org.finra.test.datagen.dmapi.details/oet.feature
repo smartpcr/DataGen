@@ -143,8 +143,8 @@ Feature: OET detail DM API Tests
 
   Scenario Template:
     Given records in OET orders with oet_rptg_exctn_firm_mp_id=OETA and oet_cntra_exctn_firm_mp_id=OETC
-      | RecordType | orgnl_exctn_dt | rptg_exctn_firm_mp_id | cntra_exctn_firm_mp_id |
-      | OET_Orders | 2015-01-26     | OETA                  | OETC                   |
+      | rec_unique_id | orgnl_exctn_dt | rptg_exctn_firm_mp_id | cntra_exctn_firm_mp_id |
+      | 777777777022 | 2015-01-26     | OETA                  | OETC                   |
     And records in firm_ref
       | firm_mp_id | ns_cstmr_id |
       | OETA       | 98765001    |

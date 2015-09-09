@@ -1,5 +1,6 @@
 package org.finra.test.datagen.details;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
@@ -95,7 +96,7 @@ public class DetailsDataSteps {
         newTracking.crit_from_tm=StringFormat.formatTime(this.range.getStartDate());
         newTracking.crit_to_tm=StringFormat.formatTime(this.range.getStartDate());
         newTracking.crit_issue_sym_id = this.range.getSymbol();
-        newTracking.crit_firm_mp_id = String.join(",", this.range.getFirms());
+        newTracking.crit_firm_mp_id = Joiner.on(',').join(this.range.getFirms());
         newTracking.crit_alt_rltd_firm = this.range.getRelatedFirms()?"Y":"N";
         newTracking.trckg_stts_cd="CMPLT";
         newTracking.cmplt_ts= StringFormat.formatDateTime(new DateTime(this.requestTime).plusSeconds(10));

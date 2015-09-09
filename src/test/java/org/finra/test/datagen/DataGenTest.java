@@ -38,7 +38,8 @@ public class DataGenTest {
             .withFirms("MLCO", "MLEX")
             .withRelatedFirms(true)
             .withStartDate(new DateTime(2015,1,20,0,0,0).toDate())
-            .withEndDate(new DateTime(2015, 1, 27, 23, 59, 59).toDate());
+            .withEndDate(new DateTime(2015, 1, 27, 23, 59, 59).toDate())
+	        .withRecordTypes(RecordType.FirmOrder, RecordType.ExchangeOrder, RecordType.OffExchangeTrade);
         try {
 	        final int totalRecords = 50;
             List<Map<String, Object>> table = DataGenerator.generateTestData(range, totalRecords);
