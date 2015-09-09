@@ -1,5 +1,7 @@
 package org.finra.test.datagen;
 
+import java.util.Random;
+
 /**
  * Created on 9/1/2015.
  */
@@ -29,5 +31,19 @@ public enum RecordType {
 			default:
 				return RecordType.Unknown;
 		}
+	}
+
+	static Random random = new Random(System.currentTimeMillis());
+	public static RecordType random() {
+		int i = random.nextInt() % 3;
+		switch (i) {
+			case 0:
+				return RecordType.FirmOrder;
+			case 1:
+				return RecordType.ExchangeOrder;
+			case 2:
+				return RecordType.OffExchangeTrade;
+		}
+		return RecordType.Unknown;
 	}
 }

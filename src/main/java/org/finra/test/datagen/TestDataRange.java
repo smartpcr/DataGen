@@ -70,4 +70,13 @@ public class TestDataRange {
 	    this.lastExchangeOrderId = lastExchangeOrderId;
 	    return this;
 	}
+
+	private long lastOffExchangeTradeId = 777777777001L;
+	public long getLastOffExchangeTradeId() {
+	    return this.lastOffExchangeTradeId;
+	}
+	public TestDataRange withLastOffExchangeTradeId(long lastOffExchangeTradeId) {
+	    this.lastOffExchangeTradeId = lastOffExchangeTradeId;
+	    return this;
+	}
 }

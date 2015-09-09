@@ -19,15 +19,6 @@ public class RowContext {
     public RecordType getRecordType() {
         return this.recordType;
     }
-    public void setRecordType(RecordType recordType) {
-	    this.recordType = recordType;
-	    if(this.recordType == RecordType.FirmOrder){
-		    this.lastFirmOrderId++;
-	    }
-	    else if(this.recordType == RecordType.ExchangeOrder){
-		    this.lastExchangeOrderId++;
-	    }
-    }
 
     private String symbol;
     public String getSymbol() {
@@ -79,18 +70,34 @@ public class RowContext {
 		return this.lastExchangeOrderId;
 	}
 
+	private long lastOffExchangeTradeId;
+	public long getLastOffExchangeTradeId() {
+	    return this.lastOffExchangeTradeId;
+	}
+
 	public RowContext(int totalRowCount, TestDataRange range) {
 		this.rowIndex = -1;
 		this.lastExchangeOrderId = range.getLastExchangeOrderId();
 		this.lastFirmOrderId = range.getLastFirmOrderId();
+		this.lastOffExchangeTradeId = range.getLastOffExchangeTradeId();
 		this.totalRowCount = totalRowCount;
 	}
 
 	public boolean next() {
+		this.recordType = RecordType.random();
 		if(this.totalRowCount>rowIndex+1){
 			this.rowIndex++;
-//			this.lastExchangeOrderId++;
-//			this.lastFirmOrderId++;
+			switch (this.recordType){
+				case FirmOrder:
+					this.lastFirmOrderId++;
+					break;
+				case ExchangeOrder:
+					this.lastExchangeOrderId++;
+					break;
+				case OffExchangeTrade:
+					this.lastOffExchangeTradeId++;
+					break;
+			}
 			return true;
 		}
 		return false;
