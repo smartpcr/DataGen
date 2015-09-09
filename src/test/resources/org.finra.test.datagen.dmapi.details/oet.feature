@@ -1,9 +1,8 @@
 @OET @OrdersDetails
 Feature: OET detail DM API Tests
 
-  Background:
-
   @OrdersDetails @OET @Issue @Symbol @Firm
+  Scenario: Make sure reference data is populated
     Given records in issue_ref
       | issue_id | efctv_dt   | xprtn_dt   | xchng_sym_id | trd_sym_id | arca_sym_id | cms_dot_dlmtd_sym_id | nyse_sym_id | oats_rptng_sym_id | siac_sym_id | issue_nm                        | issue_short_nm |
       | -08011   | 2015-08-01 | 2049-07-31 | OET1         | OET2       |             |                      |             |                   |             | Off Exchange Trade Test Issue 1 | OET Test 1     |
@@ -55,7 +54,7 @@ Feature: OET detail DM API Tests
 
   @OrdersDetails @OET @EmptyIssues
   Scenario: Make sure symbol mapped to empty issue id (-9, null) can be retrieved from search
-    Given OET records that have both valid issue_id and empty issue_id
+    Given records in OET orders that have both valid issue_id and empty issue_id
       | oet_unique_id | issue_sym_id | orgnl_exctn_dt | issue_id |
       | 777777777003  | OET4         | 2015-01-27     | -08014   |
       | 777777777004  | OET4         | 2015-01-27     | -9       |
@@ -67,8 +66,8 @@ Feature: OET detail DM API Tests
 
   @OrdersDetails @OET @LateReport
   Scenario: Make sure records reported later than execution date can be retrieved and it should also include records with empty issues
-    Given OET records that have both same-day reporting and late reporting
-      | oet_unique_id | issue_sym_id | orgnl_exctn_dt | trade_rpt_dt | issue_id |
+    Given records in OET orders that have both same-day reporting and late reporting
+      | rec_unique_id | issue_sym_id | orgnl_exctn_dt | trade_rpt_dt | issue_id |
       | 777777777006  | OET1         | 2015-01-20     | 2015-01-20   | -08011   |
       | 777777777007  | OET1         | 2015-01-20     | 2015-01-21   | -08011   |
       | 777777777008  | OET1         | 2015-01-21     | 2015-01-21   | -08011   |
@@ -87,13 +86,13 @@ Feature: OET detail DM API Tests
 
   @OrdersDetails @OET @AllRelatedFirms
   Scenario: Make sure all related firms can be retrieved using firm_ref table
-    Given OET records that have both same-day reporting and late reporting
-      | oet_unique_id | issue_sym_id | orgnl_exctn_dt | trade_rpt_dt | rptg_exctn_firm_mp_id | cntra_exctn_firm_mp_id |
+    Given records in OET orders that have both same-day reporting and late reporting
+      | rec_unique_id | issue_sym_id | orgnl_exctn_dt | trade_rpt_dt | rptg_exctn_firm_mp_id | cntra_exctn_firm_mp_id |
       | 777777777016  | OET1         | 2015-01-22     | 2015-01-22   | OETA                  | NULL                   |
       | 777777777017  | OET1         | 2015-01-22     | 2015-01-22   | OETB                  | NULL                   |
       | 777777777018  | OET1         | 2015-01-22     | 2015-01-22   | OETC                  | NULL                   |
       | 777777777019  | OET1         | 2015-01-22     | 2015-01-22   | OETD                  | NULL                   |
-    And the following firm_ref records
+    And records in firm_ref
       | firm_mp_id | ns_cstmr_id |
       | OETA       | 98765001    |
       | OETA       | 98765002    |
@@ -108,13 +107,13 @@ Feature: OET detail DM API Tests
 
   @OrdersDetails @OET @NotFound
   Scenario: Make sure when user searches OET only records and firm not present in firm_ref, 0 record should be returned
-    Given firm "OETO" or ns_cstmr_id "98765000" does not exist in OET records for ExecutionDate="2015-01-28"
-      | oet_unique_id | issue_sym_id | orgnl_exctn_dt | rptg_exctn_firm_mp_id | cntra_exctn_firm_mp_id |
+    Given records in OET orders that firm "OETO" or ns_cstmr_id "98765000" does not exist in OET records for ExecutionDate="2015-01-28"
+      | rec_unique_id | issue_sym_id | orgnl_exctn_dt | rptg_exctn_firm_mp_id | cntra_exctn_firm_mp_id |
       | 777777777021  | OET0         | 2015-01-28     | OETO                  | NULL                   |
-    And the following records exist in issue_ref
+    And records in issue_ref
       | issue_id | issue_sym_id |
       | -08010   | OET0         |
-    And the following does NOT exist in firm_ref
+    And records NOT in firm_ref
       | firm_mp_id | ns_cstmr_id |
       | OETO       | 98765000    |
       | OETO       | -9          |
@@ -126,10 +125,10 @@ Feature: OET detail DM API Tests
 
   @OrdersDetails @OET @EmptyExecutionTime
   Scenario: Make sure execution time is able to pick value from assumed execution time when original execution time is not available
-    Given An OET record with empty oet_exctn_ts but non-empty oet_assmd_exctn_ts
-      | oet_unique_id | orgnl_exctn_dt | issue_sym_id | rptg_exctn_firm_mp_id | cntra_exctn_firm_mp_id | oet_exctn_ts | oet_assmd_exctn_ts      |
+    Given records in OET orders with empty oet_exctn_ts but non-empty oet_assmd_exctn_ts
+      | rec_unique_id | orgnl_exctn_dt | issue_sym_id | rptg_exctn_firm_mp_id | cntra_exctn_firm_mp_id | oet_exctn_ts | oet_assmd_exctn_ts      |
       | 777777777022  | 2015-01-23     | OET1         | OETA                  | NULL                   | NULL         | 2015-01-23 19:19:38.420 |
-    And the following firm_ref records
+    And records in firm_ref
       | firm_mp_id | ns_cstmr_id |
       | OETA       | 98765001    |
       | OETA       | -9          |
@@ -143,10 +142,10 @@ Feature: OET detail DM API Tests
   Scenario: Make sure both fields are used to search OET records
 
   Scenario Template:
-    Given OET records with with oet_rptg_exctn_firm_mp_id=OETA and oet_cntra_exctn_firm_mp_id=OETC
+    Given records in OET orders with oet_rptg_exctn_firm_mp_id=OETA and oet_cntra_exctn_firm_mp_id=OETC
       | RecordType | orgnl_exctn_dt | rptg_exctn_firm_mp_id | cntra_exctn_firm_mp_id |
       | OET_Orders | 2015-01-26     | OETA                  | OETC                   |
-    And the following firm_ref records
+    And records in firm_ref
       | firm_mp_id | ns_cstmr_id |
       | OETA       | 98765001    |
       | OETA       | 98765002    |

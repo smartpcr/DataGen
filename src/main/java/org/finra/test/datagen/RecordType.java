@@ -27,7 +27,7 @@ public enum RecordType {
             case "eo":
 				return RecordType.ExchangeOrder;
 			case "off exchange trade":
-            case "dmapi.details":
+            case "oet":
 				return RecordType.OffExchangeTrade;
 			case "derived":
 				return RecordType.Derived;
@@ -58,7 +58,7 @@ public enum RecordType {
                         sb.append("eo");
                         break;
                     case OffExchangeTrade:
-                        sb.append("dmapi.details");
+                        sb.append("oet");
                         break;
                 }
             }

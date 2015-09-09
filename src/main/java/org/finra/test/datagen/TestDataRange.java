@@ -22,7 +22,9 @@ public class TestDataRange {
         return this.firms;
     }
     public TestDataRange withFirms(String... firms) {
-        this.firms = Arrays.asList(firms);
+        if(firms != null && firms.length>0) {
+            this.firms = Arrays.asList(firms);
+        }
         return this;
     }
 
@@ -59,6 +61,10 @@ public class TestDataRange {
     }
     public TestDataRange withRecordTypes(List<RecordType> recordTypes) {
         this.recordTypes = recordTypes;
+        return this;
+    }
+    public TestDataRange withRecordTypes(RecordType... recordTypes) {
+        this.recordTypes = Arrays.asList(recordTypes);
         return this;
     }
 
