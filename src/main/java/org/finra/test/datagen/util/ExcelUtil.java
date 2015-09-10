@@ -70,7 +70,7 @@ public class ExcelUtil {
 	public static void writeSheet(String filePath, String sheetName, List<Map<String, Object>> table)
 		throws IOException, InvalidFormatException {
 		Workbook workbook = ensureExcelFile(filePath);
-		Sheet sheet = ensureSheet(workbook, sheetName);
+		Sheet sheet = ensureSheet(workbook, sheetName, true);
 //        if(sheet.getLastRowNum()>0){
 //            for(Row row: sheet){
 //                sheet.removeRow(row);
@@ -112,7 +112,7 @@ public class ExcelUtil {
     public static void writeSheet2(String filePath, String sheetName, List<Map<String, String>> table)
         throws IOException, InvalidFormatException {
         Workbook workbook = ensureExcelFile(filePath);
-        Sheet sheet = ensureSheet(workbook, sheetName);
+        Sheet sheet = ensureSheet(workbook, sheetName, true);
 //        if(sheet.getLastRowNum()>0){
 //            for(Row row: sheet){
 //                sheet.removeRow(row);
@@ -168,12 +168,20 @@ public class ExcelUtil {
 		return workbook;
 	}
 
-	private static Sheet ensureSheet(Workbook workbook, String sheetName) {
+	private static Sheet ensureSheet(Workbook workbook, String sheetName, boolean createNew) {
 		int sheetCount = workbook.getNumberOfSheets();
 		for(int i = 0; i < sheetCount; i++) {
 			Sheet sheet = workbook.getSheetAt(i);
-			if(sheet.getSheetName().equals(sheetName))
-				return sheet;
+			if(sheet.getSheetName().equals(sheetName)){
+				if(createNew){
+					workbook.removeSheetAt(i);
+					sheet = workbook.createSheet(sheetName);
+					return sheet;
+				}
+				else {
+					return sheet;
+				}
+			}
 		}
 
 		Sheet newSheet = workbook.createSheet(sheetName);

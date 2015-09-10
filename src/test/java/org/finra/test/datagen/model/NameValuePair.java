@@ -56,6 +56,10 @@ public class NameValuePair {
         return Long.parseLong(getValue(pairs, fieldName));
     }
 
+	public static double getPercent(List<NameValuePair> pairs, final String fieldName){
+		return (double)Integer.parseInt(getValue(pairs, fieldName)) / 100.0;
+	}
+
 	public static boolean getBoolean(List<NameValuePair> pairs, final String fieldName){
 		String fieldValue = getValue(pairs, fieldName);
 		return fieldValue.equalsIgnoreCase("Y") || fieldValue.equalsIgnoreCase("T") ||

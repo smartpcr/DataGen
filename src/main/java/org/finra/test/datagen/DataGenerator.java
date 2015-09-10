@@ -55,6 +55,13 @@ public class DataGenerator {
                     isValueSet = applySequenceAndUniqueValues(record, displayRule, context);
                     if(isValueSet)
                         continue;
+
+		            if(displayRule.recordType != null) {
+			            boolean shouldFillValue = random.nextDouble() > range.getFillerPercentage();
+			            if (!shouldFillValue)
+				            continue;
+		            }
+
                     isValueSet = applyFormat(record, displayRule, range);
                     if(isValueSet)
                         continue;
@@ -81,7 +88,7 @@ public class DataGenerator {
 	        value = value.equalsIgnoreCase("blank")? null : value;
 	        if(displayRule.diverFieldName.equals("cmn_rec_type")) {
 		        RecordType recordType = rowContext.getRecordType();
-		        value = recordType.toString();
+		        value = RecordType.pickValue(displayRule, recordType);
 	        }
             record.put(displayRule.diverFieldName, value);
             isValueSet = true;
@@ -268,7 +275,7 @@ public class DataGenerator {
 		            .withMinuteOfHour(random.nextInt(60))
 		            .withSecondOfMinute(random.nextInt(60))
 		            .withMillisOfSecond(random.nextInt(1000));
-	            String value = d1.toString("yyyy/MM/dd HH:mm:ss.SSS");
+	            String value = d1.toString("yyyy-MM-dd HH:mm:ss.SSS");
                 record.put(displayRule.diverFieldName, value);
                 isValueSet = true;
             }
