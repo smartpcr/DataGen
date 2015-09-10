@@ -6,10 +6,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created on 9/1/2015.
@@ -21,7 +18,7 @@ public class ExcelUtil {
 		InputStream inputStream = new FileInputStream(file);
 		Workbook workbook = WorkbookFactory.create(inputStream);
 		Sheet sheet = workbook.getSheet(sheetName);
-		Map<String, Integer> columnHeaderIndexes = new HashMap<String, Integer>();
+		Map<String, Integer> columnHeaderIndexes = new LinkedHashMap<>();
 		Row headerRow = sheet.getRow(0);
 		int cellIndex = 0;
 		Cell cell = headerRow.getCell(cellIndex);
@@ -31,11 +28,11 @@ public class ExcelUtil {
 			cellIndex++;
 			cell=headerRow.getCell(cellIndex);
 		}
-		List<Map<String, Object>> table = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> table = new LinkedList<>();
 		int rowCount = sheet.getPhysicalNumberOfRows();
 		for(int rowNum = 1; rowNum < rowCount; rowNum++) {
 			Row dataRow = sheet.getRow(rowNum);
-			Map<String, Object> rowData = new HashMap<String, Object>();
+			Map<String, Object> rowData = new LinkedHashMap<>();
 			for(String fieldName : columnHeaderIndexes.keySet()) {
 				Cell dataCell = dataRow.getCell(columnHeaderIndexes.get(fieldName), Row.CREATE_NULL_AS_BLANK);
 				Object cellValue;
