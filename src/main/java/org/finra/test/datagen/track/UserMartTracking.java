@@ -50,13 +50,21 @@ public class UserMartTracking {
     }
 
     public static UserMartTracking find(List<UserMartTracking> trackings, final String userId, final String refId) {
-        return Iterables.find(trackings, new Predicate<UserMartTracking>() {
-            @Override
-            public boolean apply(UserMartTracking userMartTracking) {
-                return userMartTracking.rqst_user_id.equalsIgnoreCase(userId) &&
-                    userMartTracking.user_rfrnc_id.equalsIgnoreCase(refId);
-            }
-        });
+	    if(trackings==null || trackings.size()==0) return  null;
+	    for(UserMartTracking tracking : trackings) {
+		    if(tracking.rqst_user_id.equalsIgnoreCase(userId) &&
+			    tracking.user_rfrnc_id.equalsIgnoreCase(refId)){
+			    return tracking;
+		    }
+	    }
+	    return null;
+//        return Iterables.find(trackings, new Predicate<UserMartTracking>() {
+//            @Override
+//            public boolean apply(UserMartTracking userMartTracking) {
+//                return userMartTracking.rqst_user_id.equalsIgnoreCase(userId) &&
+//                    userMartTracking.user_rfrnc_id.equalsIgnoreCase(refId);
+//            }
+//        });
     }
 
     public Map<String, String> getRecord() throws IllegalAccessException {

@@ -206,9 +206,9 @@ public class DbBackup {
 		@Override
 		public TableColumn handle(ResultSet resultSet) throws SQLException {
 			TableColumn tuple = new TableColumn();
-			tuple.ordinal = resultSet.getInt(0);
-			tuple.name = resultSet.getString(1);
-			tuple.required = resultSet.getString(3).equals("NO");
+			tuple.ordinal = resultSet.getInt("ordinal_position");
+			tuple.name = resultSet.getString("column_name");
+			tuple.required = resultSet.getString("is_nullable").equals("NO");
 			DataType dataType = DataType.parseDataType(resultSet.getString("data_type"));
 			tuple.dbType = dataType.dbType;
 			tuple.size = dataType.size;

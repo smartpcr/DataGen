@@ -94,4 +94,22 @@ public class TestDataRange {
 	    this.lastOffExchangeTradeId = lastOffExchangeTradeId;
 	    return this;
 	}
+
+	private double fillerPercentage = 0.7;
+	public double getFillerPercentage() {
+	    return this.fillerPercentage;
+	}
+	public TestDataRange withFillerPercentage(double fillerPercentage) {
+	    this.fillerPercentage = fillerPercentage;
+	    return this;
+	}
+
+	private boolean includeDerivedFields = false;
+	public boolean getIncludeDerivedFields() {
+	    return this.includeDerivedFields;
+	}
+	public TestDataRange withIncludeDerivedFields(boolean includeDerivedFields) {
+	    this.includeDerivedFields = includeDerivedFields;
+	    return this;
+	}
 }

@@ -1,5 +1,8 @@
 package org.finra.test.datagen;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+
 import java.util.*;
 
 /**
@@ -65,4 +68,32 @@ public enum RecordType {
         }
         return sb.toString();
     }
+
+	public static String pickValue(ColumnDisplayRule displayRule, RecordType recordType) {
+		switch (recordType){
+			case FirmOrder:
+				return Iterables.find(displayRule.fieldValueList, new Predicate<String>() {
+					@Override
+					public boolean apply(String s) {
+						return s.toLowerCase().startsWith("firm");
+					}
+				});
+			case ExchangeOrder:
+				return Iterables.find(displayRule.fieldValueList, new Predicate<String>() {
+					@Override
+					public boolean apply(String s) {
+						return s.toLowerCase().startsWith("exchange");
+					}
+				});
+			case OffExchangeTrade:
+				return Iterables.find(displayRule.fieldValueList, new Predicate<String>() {
+					@Override
+					public boolean apply(String s) {
+						return s.toLowerCase().startsWith("off");
+					}
+				});
+			default:
+				return null;
+		}
+	}
 }

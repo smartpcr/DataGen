@@ -202,7 +202,7 @@ public class DataGenUtil {
                     .withMinuteOfHour(random.nextInt(60))
                     .withSecondOfMinute(random.nextInt(60))
                     .withMillisOfSecond(random.nextInt(1000));
-                String value = d1.toString("yyyy/MM/dd HH:mm:ss.SSS");
+                String value = d1.toString("yyyy-MM-dd HH:mm:ss.SSS");
                 returnValue = value;
             }
         }

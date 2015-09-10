@@ -70,4 +70,15 @@ public class Records {
         }
         return enumValues;
     }
+
+	public static void applyChanges(Map<String, Object> subject, Map<String, Object> fromMap) {
+		for(String key : fromMap.keySet()){
+			Object value = fromMap.get(key);
+			if(value!=null && value.toString().contains("&gt;"))
+				value = value.toString().replace("&gt;",">");
+			if(value!=null && value.toString().contains("&lt;"))
+				value = value.toString().replace("&lt;","<");
+			subject.put(key, value);
+		}
+	}
 }

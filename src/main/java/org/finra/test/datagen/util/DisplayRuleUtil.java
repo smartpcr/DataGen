@@ -61,8 +61,19 @@ public class DisplayRuleUtil {
 					displayRules.add(readDisplayRule(row));
 				}
 			}
-
-			displayRules.addAll(getAdditionalTextColumns(version));
+			List<ColumnDisplayRule> txtColumnDisplayRules = getAdditionalTextColumns(version);
+			for(ColumnDisplayRule displayRule : txtColumnDisplayRules) {
+				boolean exist = false;
+				for(ColumnDisplayRule displayRule1 : displayRules) {
+					if(displayRule.diverFieldName.equalsIgnoreCase(displayRule1.diverFieldName)){
+						exist=true;
+						break;
+					}
+				}
+				if(!exist){
+					displayRules.add(displayRule);
+				}
+			}
 			displayRulesByVersions.put(version, displayRules);
 			return displayRules;
 		}

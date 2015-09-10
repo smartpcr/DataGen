@@ -1,6 +1,7 @@
 package org.finra.test.datagen.util;
 
 import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import org.finra.test.datagen.DbType;
 
@@ -31,22 +32,25 @@ public class TableColumn {
 
     @Override
     public String toString() {
-        String sql;
-        switch (this.dbType) {
-            case Varchar:
-                sql = this.name + " (" + this.size +")";
-                break;
-            case Decimal:
-                sql = "Numeric" + String.format("(%d,%d)", this.precision, this.scale);
-                break;
-            default:
-                sql = this.name;
-                break;
-        }
-        if(this.required) {
-            sql += " NOT NULL";
-        }
-        return sql;
+	    if(!Strings.isNullOrEmpty(this.name) && this.dbType!=null){
+		    String sql;
+		    switch (this.dbType) {
+			    case Varchar:
+				    sql = this.name + " (" + this.size +")";
+				    break;
+			    case Decimal:
+				    sql = "Numeric" + String.format("(%d,%d)", this.precision, this.scale);
+				    break;
+			    default:
+				    sql = this.name;
+				    break;
+		    }
+		    if(this.required) {
+			    sql += " NOT NULL";
+		    }
+		    return sql;
+	    }
+        return null;
     }
 
     public Object changeType(String fieldValue) {

@@ -8,25 +8,26 @@ import com.google.common.collect.Lists;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.finra.test.datagen.ColumnDisplayRule;
 import org.finra.test.datagen.DataGenerator;
 import org.finra.test.datagen.RecordType;
 import org.finra.test.datagen.TestDataRange;
 import org.finra.test.datagen.model.NameValuePair;
 import org.finra.test.datagen.track.UserMartTracking;
-import org.finra.test.datagen.util.ExcelUtil;
-import org.finra.test.datagen.util.StringFormat;
+import org.finra.test.datagen.util.*;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.sql.SQLException;
 import java.util.*;
 
+import static org.finra.test.datagen.DbType.Varchar;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * Created by xiaodongli on 9/8/15.
@@ -43,11 +44,17 @@ public class DetailsDataSteps {
     private String trackExcelFile;
     private String trackSheet;
     private String trackConfigSheet;
+	private String trackingDataSourceName;
+	private String trackingSchemaName;
+	private String trackingTableName;
 
     // data
     private String martExcelFile;
     private String martSheet;
     private String martConfigSheet;
+	private String martDataSourceName;
+	private String martSchemaName;
+	private String martTableName;
 
 	@Given("^search parameters$")
 	public void setupSearchParameters(List<NameValuePair> pairs) throws Throwable {
@@ -55,18 +62,20 @@ public class DetailsDataSteps {
 			.withSymbol(NameValuePair.getValue(pairs, "symbol"))
 			.withFirms(NameValuePair.getValues(pairs, "firms"))
 			.withStartDate(NameValuePair.getDateTime(pairs, "fromDate", "fromTime"))
+			.withEndDate(NameValuePair.getDateTime(pairs, "toDate", "toTime"))
 			.withRelatedFirms(NameValuePair.getBoolean(pairs, "allRelatedFirms"))
             .withRecordTypes(RecordType.valuesOf(NameValuePair.getValue(pairs, "recordTypes")))
 			.withLastFirmOrderId(NameValuePair.getLong(pairs, "lastFirmOrderId"))
 			.withLastExchangeOrderId(NameValuePair.getLong(pairs, "lastExchangeOrderId"))
-            .withLastOffExchangeTradeId(NameValuePair.getLong(pairs, "lastOffExchangeTradeId"));
+            .withLastOffExchangeTradeId(NameValuePair.getLong(pairs, "lastOffExchangeTradeId"))
+			.withFillerPercentage(NameValuePair.getPercent(pairs, "DefaultFieldValueFillerPercentage"))
+			.withIncludeDerivedFields(NameValuePair.getBoolean(pairs, "includeDerivedFields"));
 
         this.version = NameValuePair.getInt(pairs, "version");
         this.recordCount = NameValuePair.getInt(pairs, "recordCount");
         this.userId = NameValuePair.getValue(pairs, "userId");
         this.refId = NameValuePair.getValue(pairs, "refId");
         this.requestTime = (new DateTime()).withYear(2022).toDate();
-
 	}
 
 	@Given("^user tracking record$")
@@ -74,13 +83,19 @@ public class DetailsDataSteps {
         this.trackExcelFile = NameValuePair.getValue(pairs, "excelFile");
         this.trackSheet = NameValuePair.getValue(pairs, "trackSheet");
         this.trackConfigSheet = NameValuePair.getValue(pairs, "configSheet");
+		this.trackingDataSourceName = NameValuePair.getValue(pairs, "trackingDataSource");
+		this.trackingSchemaName = NameValuePair.getValue(pairs, "trackingSchemaName");
+		this.trackingTableName = NameValuePair.getValue(pairs, "trackingTableName");
     }
 
 	@Given("^mart table record$")
-	public void setupOutput(List<NameValuePair> pairs) {
+	public void setupMart(List<NameValuePair> pairs) {
         this.martExcelFile = NameValuePair.getValue(pairs, "excelFile");
         this.martSheet = NameValuePair.getValue(pairs, "dataSheet");
         this.martConfigSheet = NameValuePair.getValue(pairs, "configSheet");
+		this.martDataSourceName = NameValuePair.getValue(pairs, "martDataSource");
+		this.martSchemaName = NameValuePair.getValue(pairs, "martSchemaName");
+		this.martTableName = NameValuePair.getValue(pairs, "martTableName");
 	}
 
     @When("^generate tracking data$")
@@ -135,16 +150,163 @@ public class DetailsDataSteps {
         }
     }
 
-	@When("^generate detail data$")
+	@When("^generate tracking config.*$")
+	public void generateTrackConfig() {
+		try {
+			List<TableColumn> trackingColumns = DbBackup.getTableColumns(this.trackingDataSourceName, this.trackingSchemaName, this.trackingTableName);
+			List<Map<String, Object>> configData = new LinkedList<>();
+			for(TableColumn column : trackingColumns) {
+				if(column.name.equalsIgnoreCase("xpr_fl"))
+					continue;
+
+				Map<String, Object> record = new LinkedHashMap<>();
+				record.put("field", column.name);
+				record.put("type", column.dbType.toString());
+				record.put("format", null);
+				record.put("default", null);
+				configData.add(record);
+			}
+			String excelFilePath = "out/" + this.trackExcelFile;
+			ExcelUtil.writeSheet(excelFilePath, this.trackConfigSheet, configData);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
+	@When("^generate mart data.*$")
 	public void generateMartData() {
         try {
             List<Map<String, Object>> table = DataGenerator.generateTestData(this.range, this.recordCount, this.version);
             assertNotNull(table);
             assertThat(table.size(), equalTo(this.recordCount));
+
+	        List<ColumnDisplayRule> displayRules = DisplayRuleUtil.readDisplayRules(this.version);
+	        this.validateConcatenatedColumnSize(table, displayRules);
+	        String excelFilePath = "out/" + this.martExcelFile;
+	        ExcelUtil.writeSheet(excelFilePath, this.martSheet, table);
         }
         catch (Exception e){
             fail(e.getMessage());
         }
+	}
+
+	@When("^apply static data only when userId=\"([\\w]+)\" and refId=\"([\\w]+)\"")
+	public void applyStaticData(String userId, String refId, List<Map<String, Object>> records) {
+		if(this.userId.equals(userId) && this.refId.equals(refId) && records!=null && records.size()>0) {
+			try {
+				String excelFilePath = "out/" + this.martExcelFile;
+				List<Map<String, Object>> table = ExcelUtil.readSheetAsTable(excelFilePath, this.martSheet);
+				int staticDataIdx = 0;
+				int tableRowIx = 0;
+				int rowsUpdated = 0;
+				while (staticDataIdx<records.size() && tableRowIx< table.size()) {
+					String recordType = Records.getValue(records.get(staticDataIdx), "cmn_rec_type");
+					String recordType2 = Records.getValue(table.get(tableRowIx), "cmn_rec_type");
+					if(recordType.equalsIgnoreCase(recordType2)) {
+						Records.applyChanges(table.get(tableRowIx), records.get(staticDataIdx));
+						staticDataIdx++;
+						tableRowIx++;
+						rowsUpdated++;
+					}
+					else {
+						tableRowIx++;
+					}
+				}
+				assertEquals(records.size(), rowsUpdated);
+				ExcelUtil.writeSheet(excelFilePath, this.martSheet, table);
+			}
+			catch (Exception e){
+				fail(e.getMessage());
+			}
+		}
+	}
+
+	@When("^generate mart config.*$")
+	public void generateMartConfig() {
+		try {
+			List<TableColumn> columns = DbBackup.getTableColumns(this.martDataSourceName, this.martSchemaName, this.martTableName);
+			List<Map<String, Object>> configData = new LinkedList<>();
+			for(TableColumn column : columns) {
+				if(column.name.equalsIgnoreCase("mart_row_id"))
+					continue;
+				if(!this.range.getIncludeDerivedFields() && column.name.toLowerCase().startsWith("drvd_"))
+					continue;
+
+				Map<String, Object> record = new LinkedHashMap<>();
+				record.put("field", column.name);
+				record.put("type", column.dbType.toString());
+				record.put("format", null);
+				record.put("default", null);
+				configData.add(record);
+			}
+			String excelFilePath = "out/" + this.martExcelFile;
+			ExcelUtil.writeSheet(excelFilePath, this.martConfigSheet, configData);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
+	private void validateConcatenatedColumnSize(List<Map<String, Object>> table, List<ColumnDisplayRule> displayRules){
+		int recordIdx = 0;
+		for(Map<String, Object> record : table) {
+			recordIdx++;
+
+			int concatedCommonFieldSize = 0;
+			int concatedFirmOrderFieldSize = 0;
+			int concatedExchangeOrderFieldSize = 0;
+			int concatedOffExchangeTradeFieldSize = 0;
+			for(ColumnDisplayRule rule : displayRules){
+				if(record.containsKey(rule.diverFieldName)) {
+					Object value = record.get(rule.diverFieldName);
+					if(value!=null) {
+						if(rule.diverDataType!=null && rule.diverDataType.dbType== Varchar){
+							int allowedSize = rule.diverDataType.size;
+							if(value.toString().length()>allowedSize){
+								System.out.println(String.format("\n%s_%s: record #",this.userId, this.refId, recordIdx));
+								System.out.println(String.format(
+									"field [%s] value '%s' is exceed its allowed length: %d",
+									rule.diverFieldName, value, allowedSize));
+							}
+						}
+						switch (rule.recordType){
+							case Common:
+								concatedCommonFieldSize += value.toString().length();
+								break;
+							case FirmOrder:
+								concatedFirmOrderFieldSize += value.toString().length();
+								break;
+							case ExchangeOrder:
+								concatedExchangeOrderFieldSize += value.toString().length();
+								break;
+							case OffExchangeTrade:
+								concatedOffExchangeTradeFieldSize += value.toString().length();
+								break;
+						}
+					}
+				}
+			}
+
+			if(concatedCommonFieldSize>1000) {
+				System.out.println(String.format("\n%s_%s: record #",this.userId, this.refId, recordIdx));
+				System.out.println("concatenated text for common fields exceed 1000 limit: " + concatedCommonFieldSize);
+			}
+			if(concatedFirmOrderFieldSize>1000) {
+				System.out.println(String.format("\n%s_%s: record #",this.userId, this.refId, recordIdx));
+				System.out.println("concatenated text for fo fields exceed 1000 limit: " + concatedFirmOrderFieldSize);
+			}
+			if(concatedExchangeOrderFieldSize>1000) {
+				System.out.println(String.format("\n%s_%s: record #",this.userId, this.refId, recordIdx));
+				System.out.println("concatenated text for eo fields exceed 1000 limit: " + concatedExchangeOrderFieldSize);
+			}
+			if(concatedOffExchangeTradeFieldSize>1000) {
+				System.out.println(String.format("\n%s_%s: record #",this.userId, this.refId, recordIdx));
+				System.out.println("concatenated text for oet fields exceed 1000 limit: " + concatedOffExchangeTradeFieldSize);
+			}
+		}
 	}
 
 	@Then("^user track record should be populated$")
