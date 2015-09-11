@@ -1,4 +1,4 @@
-package org.finra.test.datagen.dmapi.details;
+package org.finra.test.datagen.dmapi;
 
 import cucumber.api.junit.Cucumber;
 import org.junit.runner.RunWith;

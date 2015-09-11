@@ -8,10 +8,7 @@ import com.google.common.collect.Lists;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import org.finra.test.datagen.ColumnDisplayRule;
-import org.finra.test.datagen.DataGenerator;
-import org.finra.test.datagen.RecordType;
-import org.finra.test.datagen.TestDataRange;
+import org.finra.test.datagen.*;
 import org.finra.test.datagen.model.NameValuePair;
 import org.finra.test.datagen.track.UserMartTracking;
 import org.finra.test.datagen.util.*;
@@ -56,6 +53,9 @@ public class DetailsDataSteps {
 	private String martSchemaName;
 	private String martTableName;
 
+	List<ColumnDisplayRule> displayRules;
+	private Map<String, HandleCopyValue> copyValueHandlers;
+
 	@Given("^search parameters$")
 	public void setupSearchParameters(List<NameValuePair> pairs) throws Throwable {
 		this.range = new TestDataRange()
@@ -76,6 +76,15 @@ public class DetailsDataSteps {
         this.userId = NameValuePair.getValue(pairs, "userId");
         this.refId = NameValuePair.getValue(pairs, "refId");
         this.requestTime = (new DateTime()).withYear(2022).toDate();
+
+		this.displayRules = DisplayRuleUtil.readDisplayRules(this.version);
+		this.copyValueHandlers = new HashMap<>();
+		for(ColumnDisplayRule displayRule : this.displayRules) {
+			if(displayRule.sourceFieldName!=null && displayRule.sourceFieldName.size()>0) {
+				HandleCopyValue copyHandler = new CopyValueHandler(displayRule.diverFieldName, this.displayRules);
+				this.copyValueHandlers.put(displayRule.diverFieldName, copyHandler);
+			}
+		}
 	}
 
 	@Given("^user tracking record$")
@@ -182,8 +191,7 @@ public class DetailsDataSteps {
             assertNotNull(table);
             assertThat(table.size(), equalTo(this.recordCount));
 
-	        List<ColumnDisplayRule> displayRules = DisplayRuleUtil.readDisplayRules(this.version);
-	        this.validateConcatenatedColumnSize(table, displayRules);
+	        this.validateConcatenatedColumnSize(table, this.displayRules);
 	        String excelFilePath = "out/" + this.martExcelFile;
 	        ExcelUtil.writeSheet(excelFilePath, this.martSheet, table);
         }
@@ -205,7 +213,7 @@ public class DetailsDataSteps {
 					String recordType = Records.getValue(records.get(staticDataIdx), "cmn_rec_type");
 					String recordType2 = Records.getValue(table.get(tableRowIx), "cmn_rec_type");
 					if(recordType.equalsIgnoreCase(recordType2)) {
-						Records.applyChanges(table.get(tableRowIx), records.get(staticDataIdx));
+						Records.applyChanges(table.get(tableRowIx), records.get(staticDataIdx), this.copyValueHandlers);
 						staticDataIdx++;
 						tableRowIx++;
 						rowsUpdated++;

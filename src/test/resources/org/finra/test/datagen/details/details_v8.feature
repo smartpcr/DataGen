@@ -77,10 +77,14 @@ Feature: Generate staged data for details page for v8
       | Firm Order   | OR                | B               | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | OR               | 1694342612998  | AAP\L           |
       | Firm Order   | OR                | B               | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | OR               | 1694342615563  | AAP~L           |
       | Firm Order   | OR                | SS              | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | OR               | 1694342589990  | AAP`L           |
-    And apply static data only when userId="filter2" and refId="100003"
+    And apply static data only when userId="filter3" and refId="100005"
       | cmn_rec_type   | cmn_event_type_cd | cmn_issue_sym_id | cmn_mkt_class_cd | cmn_bd_nb | cmn_firm_mp_id | cmn_event_dt | cmn_event_tm            | cmn_event_qt | cmn_buy_sell_cd | eo_rec_unique_id                      | eo_orgnl_trade_dt | eo_order_rcvd_tm        | eo_issue_sym_id | eo_issue_id | eo_mkt_class_cd |
       | Exchange Order | OR                | AAPL             | NNM              | 29        | MLCO           | 2014-06-03   | 1970-01-01 11:52:31.123 | 800          | B               | J_2015-02-11_1D1KT401AHUU_EX_20062479 | 2014-06-03        | 1970-01-01 11:52:31.123 | AAPL%           | 8           | NNM             |
       | Exchange Order | OR                | AAPL             | NNM              | 29        | MLCO           | 2014-06-03   | 1970-01-01 11:52:31.123 | 800          | B               | J_2015-02-11_1D1KT401AHUU_EX_20062496 | 2014-06-03        | 1970-01-01 11:52:31.123 | AAPL%           | 8           | NNM             |
+    And apply static data only when userId="filter3" and refId="100006"
+      | cmn_rec_type   | cmn_event_type_cd | cmn_issue_sym_id | cmn_mkt_class_cd | cmn_bd_nb | cmn_firm_mp_id | cmn_event_dt | cmn_event_tm            | cmn_event_qt | cmn_buy_sell_cd | eo_rec_unique_id                      | eo_orgnl_trade_dt | eo_order_rcvd_tm        | eo_issue_sym_id | eo_issue_id | eo_mkt_class_cd |
+      | Firm Order     | OR                | AAPL             | NNM              | 29        | EWTT           | 2014-06-03   | 1970-01-01 11:52:31.123 | 800          | B               | J_2015-02-11_1D1KT401AHUU_EX_20062479 | 2014-06-03        | 1970-01-01 11:52:31.123 | AAPL%           | 8           | NNM             |
+      | Exchange Order | OR                | AAPL             | NNM              | 29        | EWTT           | 2014-06-03   | 1970-01-01 11:52:31.123 | 800          | B               | J_2015-02-11_1D1KT401AHUU_EX_20062496 | 2014-06-03        | 1970-01-01 11:52:31.123 | AAPL%           | 8           | NNM             |
     And generate mart config
     Then user track record should be populated
     And data mart table should be populated

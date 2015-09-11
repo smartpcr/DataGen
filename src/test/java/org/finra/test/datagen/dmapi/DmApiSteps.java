@@ -1,4 +1,4 @@
-package org.finra.test.datagen.dmapi.details;
+package org.finra.test.datagen.dmapi;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;

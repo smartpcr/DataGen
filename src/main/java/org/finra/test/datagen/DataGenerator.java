@@ -46,17 +46,17 @@ public class DataGenerator {
 
                 record.put(displayRule.diverFieldName, null);
 	            if(displayRule.recordType == Common || displayRule.recordType==context.getRecordType()){
-                    boolean isValueSet = checkPickListAndReferenceData(record, context, refData, displayRule);
-                    if(isValueSet)
-                        continue;
-                    isValueSet = copyValue(record, displayRule, context);
+		            boolean isValueSet = copyValue(record, displayRule, context);
+		            if(isValueSet)
+			            continue;
+                    isValueSet = checkPickListAndReferenceData(record, context, refData, displayRule);
                     if(isValueSet)
                         continue;
                     isValueSet = applySequenceAndUniqueValues(record, displayRule, context);
                     if(isValueSet)
                         continue;
 
-		            if(displayRule.recordType != null) {
+		            if(displayRule.recordType != null && displayRule.recordType!=RecordType.Common) {
 			            boolean shouldFillValue = random.nextDouble() > range.getFillerPercentage();
 			            if (!shouldFillValue)
 				            continue;
@@ -256,29 +256,42 @@ public class DataGenerator {
         }
         else if(displayRule.formatType == FormatType.Timestamp ||
 	        (displayRule.diverDataType!=null && displayRule.diverDataType.dbType == DbType.Timestamp)) {
-            DateTime d1 = new DateTime(range.getStartDate());
-            DateTime d2 = new DateTime(range.getEndDate());
-            int daysInterval = Days.daysBetween(d1.toLocalDate(), d2.toLocalDate()).getDays();
-            if(daysInterval>0) {
-                int days = random.nextInt(daysInterval);
-                DateTime d3 = d1.plusDays(days)
-	                .withHourOfDay(random.nextInt(24))
-	                .withMinuteOfHour(random.nextInt(60))
-	                .withSecondOfMinute(random.nextInt(60))
-	                .withMillisOfSecond(random.nextInt(1000));
-	            String value = d3.toString("yyyy-MM-dd HH:mm:ss.SSS");
-                record.put(displayRule.diverFieldName, value);
-                isValueSet = true;
-            }
-            else {
-	            d1 = d1.withHourOfDay(random.nextInt(24))
-		            .withMinuteOfHour(random.nextInt(60))
-		            .withSecondOfMinute(random.nextInt(60))
-		            .withMillisOfSecond(random.nextInt(1000));
-	            String value = d1.toString("yyyy-MM-dd HH:mm:ss.SSS");
-                record.put(displayRule.diverFieldName, value);
-                isValueSet = true;
-            }
+
+	        if(displayRule.diverFieldName.equalsIgnoreCase("cmn_event_tm")){
+		        DateTime d = new DateTime().withYear(1970).withMonthOfYear(1).withDayOfMonth(1)
+			        .withHourOfDay(random.nextInt(24))
+			        .withMinuteOfHour(random.nextInt(60))
+			        .withSecondOfMinute(random.nextInt(60))
+			        .withMillisOfSecond(random.nextInt(1000));
+		        String value = d.toString("yyyy-MM-dd HH:mm:ss.SSS");
+		        record.put(displayRule.diverFieldName, value);
+		        isValueSet = true;
+	        }
+	        else {
+		        DateTime d1 = new DateTime(range.getStartDate());
+		        DateTime d2 = new DateTime(range.getEndDate());
+		        int daysInterval = Days.daysBetween(d1.toLocalDate(), d2.toLocalDate()).getDays();
+		        if(daysInterval>0) {
+			        int days = random.nextInt(daysInterval);
+			        DateTime d3 = d1.plusDays(days)
+				        .withHourOfDay(random.nextInt(24))
+				        .withMinuteOfHour(random.nextInt(60))
+				        .withSecondOfMinute(random.nextInt(60))
+				        .withMillisOfSecond(random.nextInt(1000));
+			        String value = d3.toString("yyyy-MM-dd HH:mm:ss.SSS");
+			        record.put(displayRule.diverFieldName, value);
+			        isValueSet = true;
+		        }
+		        else {
+			        d1 = d1.withHourOfDay(random.nextInt(24))
+				        .withMinuteOfHour(random.nextInt(60))
+				        .withSecondOfMinute(random.nextInt(60))
+				        .withMillisOfSecond(random.nextInt(1000));
+			        String value = d1.toString("yyyy-MM-dd HH:mm:ss.SSS");
+			        record.put(displayRule.diverFieldName, value);
+			        isValueSet = true;
+		        }
+	        }
         }
         return isValueSet;
     }

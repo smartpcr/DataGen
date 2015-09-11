@@ -2,6 +2,7 @@ package org.finra.test.datagen.util;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import org.finra.test.datagen.HandleCopyValue;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
@@ -71,7 +72,7 @@ public class Records {
         return enumValues;
     }
 
-	public static void applyChanges(Map<String, Object> subject, Map<String, Object> fromMap) {
+	public static void applyChanges(Map<String, Object> subject, Map<String, Object> fromMap, Map<String, HandleCopyValue> valueChangeHandlers) {
 		for(String key : subject.keySet()){
 			if(fromMap.containsKey(key)){
 				Object value = fromMap.get(key);
@@ -79,7 +80,13 @@ public class Records {
 					value = value.toString().replace("&gt;",">");
 				if(value!=null && value.toString().contains("&lt;"))
 					value = value.toString().replace("&lt;","<");
-				subject.put(key, value);
+				Object oldValue = subject.get(key);
+				if(!oldValue.equals(value)) {
+					subject.put(key, value);
+					if(valueChangeHandlers.containsKey(key)){
+						valueChangeHandlers.get(key).updateDependentFields(subject, value);
+					}
+				}
 			}
 		}
 	}
