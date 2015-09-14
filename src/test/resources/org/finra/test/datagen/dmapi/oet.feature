@@ -32,7 +32,7 @@ Feature: OET detail DM API Tests
       | rec_unique_id                      | issue_sym_id | orgnl_trade_dt | firm_mp_id |
       | J_2015-01-20_UF1KTC00051J_EX_82497 | OET1         | 2015-01-28     | OETB       |
     And records in OET orders
-      | oet_unique_id | issue_sym_id | orgnl_exctn_dt | firm_mp_id |
+      | rec_unique_id | issue_sym_id | orgnl_exctn_dt | firm_mp_id |
       | 777777777001  | OET1         | 2015-01-28     | OETA       |
       | 777777777002  | OET1         | 2015-01-28     | OETD       |
     And records in issue_ref
@@ -55,7 +55,7 @@ Feature: OET detail DM API Tests
   @OrdersDetails @OET @EmptyIssues
   Scenario: Make sure symbol mapped to empty issue id (-9, null) can be retrieved from search
     Given records in OET orders that have both valid issue_id and empty issue_id
-      | oet_unique_id | issue_sym_id | orgnl_exctn_dt | issue_id |
+      | rec_unique_id | issue_sym_id | orgnl_exctn_dt | issue_id |
       | 777777777003  | OET4         | 2015-01-27     | -08014   |
       | 777777777004  | OET4         | 2015-01-27     | -9       |
       | 777777777005  | OET4         | 2015-01-27     | NULL     |

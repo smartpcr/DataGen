@@ -1,4 +1,4 @@
-@Details @Data
+@Details @Data @ignore
 Feature: Generate staged data for details page for v7
 
   @ignore
