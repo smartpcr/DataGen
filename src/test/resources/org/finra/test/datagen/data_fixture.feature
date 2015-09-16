@@ -6,3 +6,4 @@ Feature: fix data constraints from filter expressions
     When generate data with the following constraints
       | Count | FilterExpression                                                                |
       | 10    | cmn_rec_type='Firm Order' AND cmn_event_type_cd='OR' AND fo_issue_sym_id='AAPL' |
+    Then the generated data should satisfy all constraints and total record should be less than 50

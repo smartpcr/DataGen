@@ -1,10 +1,10 @@
 @Details @Data
-Feature: Generate staged data for details page for v8
+Feature: Generate staged data for details page for v9
 
   Scenario Template: stage test data for user mart
     Given search parameters
       | Field                             | Value                    |
-      | Version                           | 8                        |
+      | Version                           | 9                        |
       | Symbol                            | <symbol>                 |
       | Firms                             | <firms>                  |
       | AllRelatedFirms                   | <allRelated>             |
@@ -23,7 +23,7 @@ Feature: Generate staged data for details page for v8
       | DefaultFieldValueFillerPercentage | 50                       |
     And user tracking record
       | Field              | Value                  |
-      | ExcelFile          | filter_N-1_testdata.xlsx |
+      | ExcelFile          | filter_N_testdata.xlsx |
       | TrackSheet         | user_mart_trckg        |
       | ConfigSheet        | user_mart_trckg_dm     |
       | TrackingDataSource | track                  |
@@ -31,7 +31,7 @@ Feature: Generate staged data for details page for v8
       | TrackingTableName  | user_mart_trckg        |
     And mart table record
       | Field          | Value                  |
-      | ExcelFile      | filter_N-1_testdata.xlsx |
+      | ExcelFile      | filter_N_testdata.xlsx |
       | DataSheet      | <userId>_<refId>       |
       | ConfigSheet    | <userId>_<refId>_dm    |
       | MartDataSource | mart                   |

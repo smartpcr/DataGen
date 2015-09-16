@@ -1,7 +1,6 @@
-@Details @Data @ignore
+@Details @Data
 Feature: Generate staged data for details page for v7
 
-  @ignore
   Scenario Template: stage test data for user mart
     Given search parameters
       | Field                             | Value                    |
@@ -24,7 +23,7 @@ Feature: Generate staged data for details page for v7
       | DefaultFieldValueFillerPercentage | 50                       |
     And user tracking record
       | Field              | Value                    |
-      | ExcelFile          | filter_N-1_testdata.xlsx |
+      | ExcelFile          | filter_N-2_testdata.xlsx |
       | TrackSheet         | user_mart_trckg          |
       | ConfigSheet        | user_mart_trckg_dm       |
       | TrackingDataSource | track                    |
@@ -32,7 +31,7 @@ Feature: Generate staged data for details page for v7
       | TrackingTableName  | user_mart_trckg          |
     And mart table record
       | Field          | Value                    |
-      | ExcelFile      | filter_N-1_testdata.xlsx |
+      | ExcelFile      | filter_N-2_testdata.xlsx |
       | DataSheet      | <userId>_<refId>         |
       | ConfigSheet    | <userId>_<refId>_dm      |
       | MartDataSource | mart                     |
