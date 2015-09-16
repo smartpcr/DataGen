@@ -11,7 +11,9 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.finra.test.datagen.*;
 import org.finra.test.datagen.model.*;
 import org.finra.test.datagen.rule.RowContext;
+import org.finra.test.datagen.schema.SeedFileParser;
 import org.finra.test.datagen.util.DisplayRuleUtil;
+import org.finra.test.datagen.util.PropertyReader;
 import org.finra.test.datagen.util.StringFormat;
 import org.finra.test.datagen.util.TableColumn;
 
@@ -21,123 +23,54 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 /**
  * Created by xiaodongli on 9/9/15.
  */
 public class DmApiSteps {
-    @Given("^records in firm_ref.*")
-    public void ensureDataInFirmRef(List<FirmRefRecord> records){
+	private List<ExcelRecord> excelRecords;
 
-    }
+	@Given("^output excel file paths$")
+	public void setupExcelOutput(List<ExcelRecord> excelRecords) {
+		this.excelRecords = excelRecords;
+	}
 
-    @Given("^records NOT in firm_ref.*")
-    public void ensureDataNotInFirmRef(List<FirmRefRecord> records){
+	@Given("^records in '(\\w+)'(.*)$")
+	public void ensureDataInOetOrders(final String tableName, List<Map<String, Object>> records)
+		throws IllegalAccessException, IOException, InvalidFormatException, SQLException {
 
-    }
+		Preconditions.checkNotNull(tableName);
+		Preconditions.checkArgument(records!=null && records.size()>0);
 
-    @Given("^records in issue_ref.*")
-    public void ensureDataInIssueRef(List<IssueRefRecord> records) {
+		List<TableColumn> columns = getTableStructure(tableName);
+		ExcelRecord excelRecord = null;
+		try {
+			excelRecord = Iterables.find(this.excelRecords, new Predicate<ExcelRecord>() {
+				@Override
+				public boolean apply(ExcelRecord excelRecord) {
+					return excelRecord.tableName.equalsIgnoreCase(tableName);
+				}
+			});
+		}
+		catch (Throwable ignored){}
+		assertNotNull(excelRecord);
 
-    }
+		List<Field> fields = Arrays.asList(OetDetailRecord.class.getFields());
+		List<ColumnDisplayRule> displayRules = DisplayRuleUtil.readDisplayRules();
 
-    @Given("^records in OATS new orders.*")
-    public void ensureDataInOatsNewOrders(List<OatsNewOrderRecord> records) {
+		for(Map<String, Object> record : records) {
 
-    }
+		}
+	}
 
-    @Given("^records in OATS processed orders.*")
-    public void ensureDataInOatsProcessedOrders(List<OatsProcessedOrderRecord> records) {
-
-    }
-
-    @Given("^records in NED orders.*")
-    public void ensureDataInNedOrders(List<NedOrderRecord> records) {
-
-    }
-
-    @Given("^records in OET orders.*")
-    public void ensureDataInOetOrders(List<OetDetailRecord> records) throws IllegalAccessException, IOException, InvalidFormatException, SQLException {
-        final String excelFile="";
-        final String oetSheet = "";
-        List<Field> fields = Arrays.asList(OetDetailRecord.class.getFields());
-        List<ColumnDisplayRule> displayRules = DisplayRuleUtil.readDisplayRules();
-
-        for(OetDetailRecord record : records) {
-            Preconditions.checkNotNull(record.ORGNL_EXCTN_DT);
-            Preconditions.checkNotNull(record.REC_UNIQUE_ID);
-            Preconditions.checkNotNull(record.ISSUE_SYM_ID);
-            Date execDate = StringFormat.getDate(record.ORGNL_EXCTN_DT);
-            long uniqId = Long.parseLong(record.REC_UNIQUE_ID);
-            String symbolId = record.ISSUE_SYM_ID;
-            String firms = null;
-            if(!Strings.isNullOrEmpty(record.RPTG_EXCTN_FIRM_MP_ID))
-                firms = record.RPTG_EXCTN_FIRM_MP_ID;
-            else if(!Strings.isNullOrEmpty(record.CNTRA_EXCTN_FIRM_MP_ID))
-                firms = record.CNTRA_EXCTN_FIRM_MP_ID;
-            TestDataRange range = new TestDataRange()
-                .withSymbol(symbolId)
-                .withFirms(firms)
-                .withStartDate(execDate)
-                .withEndDate(execDate)
-                .withLastOffExchangeTradeId(uniqId)
-                .withRelatedFirms(false)
-                .withRecordTypes(RecordType.OffExchangeTrade);
-            ReferenceData refData = new ReferenceData(range);
-            RowContext context = new RowContext(1, range);
-
-            Preconditions.checkArgument(record.RPTG_EXCTN_FIRM_MP_ID!=null || record.CNTRA_EXCTN_FIRM_MP_ID!=null);
-
-            for(Field field : fields) {
-                final String fieldName = field.getName();
-                TableColumn column = OetDetailRecord.getFieldToColumnMappings().get(fieldName);
-                Object value = field.get(record);
-                if(value == null) {
-                    ColumnDisplayRule displayRule = Iterables.find(displayRules, new Predicate<ColumnDisplayRule>() {
-                        @Override
-                        public boolean apply(ColumnDisplayRule columnDisplayRule) {
-                            return columnDisplayRule.diverFieldName.equalsIgnoreCase("oet_" + fieldName) ||
-                            (columnDisplayRule.sourceFieldName!=null &&
-                                columnDisplayRule.sourceFieldName.containsKey(RecordType.OffExchangeTrade) &&
-                                columnDisplayRule.sourceFieldName.get(RecordType.OffExchangeTrade).equalsIgnoreCase(fieldName));
-                        }
-                    });
-                    if(displayRule!=null) {
-                        if(displayRule.recordType==RecordType.Artificial)
-                            continue;
-                        if(displayRule.diverFieldName.equals("cmn_rec_type"))
-                            continue;
-                        value = DataGenUtil.getPickListValue(displayRule);
-                        if(value!=null){
-                            field.set(record, value);
-                            continue;
-                        }
-                        value = DataGenUtil.getRefData(displayRule, refData, context);
-                        if(value != null){
-                            field.set(record, value);
-                            continue;
-                        }
-                        value = DataGenUtil.applySequenceAndUniqueValues(displayRule, context);
-                        if(value != null){
-                            field.set(record, value);
-                            continue;
-                        }
-                        value = DataGenUtil.applyFormat(displayRule, range);
-                        if(value != null){
-                            field.set(record, value);
-                            continue;
-                        }
-                        value = DataGenUtil.applyRandomValue(displayRule, context);
-                        if(value != null){
-                            field.set(record, value);
-                        }
-                        else {
-                            System.out.println(displayRule.diverFieldName);
-                        }
-                    }
-                }
-            }
-        }
+    @Given("^records NOT in '(\\w+)'$")
+    public void ensureDataNotInFirmRef(String tableName, List<Map<String, Object>> records){
+	    Preconditions.checkNotNull(tableName);
+	    Preconditions.checkArgument(records!=null && records.size()>0);
     }
 
     @When("^Run DM API query.*")
@@ -149,4 +82,14 @@ public class DmApiSteps {
     public void validateDmQueryResult(int expectedRecords) {
 
     }
+
+	private List<TableColumn> getTableStructure(String tableName) {
+		String seedFileName = PropertyReader.get(tableName+".seed");
+		try {
+			return SeedFileParser.parseSeedFile(seedFileName);
+		} catch (IOException e) {
+			fail(e.getMessage());
+			return null;
+		}
+	}
 }
