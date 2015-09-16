@@ -2,6 +2,7 @@ package org.finra.test.datagen;
 
 import com.google.common.base.Strings;
 import org.finra.test.datagen.util.ExcelUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -13,6 +14,7 @@ import static org.junit.Assert.*;
 /**
  * Created on 9/1/2015.
  */
+@Ignore
 public class ExcelUtilTest {
 	@Test
 	public void canReadExcelFile() {

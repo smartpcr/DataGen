@@ -1,7 +1,13 @@
+<<<<<<< HEAD
 @Details @Data
 Feature: Generate staged data for details page for v7
 
   @ignore
+=======
+@Details @Data @ignore
+Feature: Generate staged data for details page for v7
+
+>>>>>>> 034eb2c493cc943c6f71b860ed7003c81563ba74
   Scenario Template: stage test data for user mart
     Given search parameters
       | Field                             | Value                    |
@@ -24,7 +30,11 @@ Feature: Generate staged data for details page for v7
       | DefaultFieldValueFillerPercentage | 50                       |
     And user tracking record
       | Field              | Value                    |
+<<<<<<< HEAD
       | ExcelFile          | filter_N-1_testdata.xlsx |
+=======
+      | ExcelFile          | filter_N-2_testdata.xlsx |
+>>>>>>> 034eb2c493cc943c6f71b860ed7003c81563ba74
       | TrackSheet         | user_mart_trckg          |
       | ConfigSheet        | user_mart_trckg_dm       |
       | TrackingDataSource | track                    |
@@ -32,7 +42,11 @@ Feature: Generate staged data for details page for v7
       | TrackingTableName  | user_mart_trckg          |
     And mart table record
       | Field          | Value                    |
+<<<<<<< HEAD
       | ExcelFile      | filter_N-1_testdata.xlsx |
+=======
+      | ExcelFile      | filter_N-2_testdata.xlsx |
+>>>>>>> 034eb2c493cc943c6f71b860ed7003c81563ba74
       | DataSheet      | <userId>_<refId>         |
       | ConfigSheet    | <userId>_<refId>_dm      |
       | MartDataSource | mart                     |
@@ -43,8 +57,14 @@ Feature: Generate staged data for details page for v7
     And generate mart data
     And apply static data only when userId="filter2" and refId="100003"
       | cmn_rec_type | cmn_event_type_cd | cmn_issue_sym_id | cmn_mkt_class_cd | cmn_bd_nb | cmn_firm_mp_id | cmn_event_dt | cmn_event_tm        | cmn_event_qt | cmn_buy_sell_cd | fo_oats_roe_id | fo_order_rcvd_dt    | fo_ns_cstmr_id | fo_firm_order_id     | fo_issue_sym_id |
+<<<<<<< HEAD
       | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          |                 | 99900083       | 2014-06-03 09:00:00 | 447            | AbCd1234             | AAPL            |
       | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          |                 | 99900084       | 2014-06-03 09:00:00 | 447            | Abcd5678             | AAP L           |
+=======
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          |                 | 99900083       | 2014-06-03 09:00:00 | 447            | 1la707pq5819         | AAPL            |
+      | Firm Order   | NW                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          |                 | 99900083       | 2014-06-03 09:00:00 | 447            | 1302465Wee2240602A   | AAPL            |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          |                 | 99900084       | 2014-06-03 09:00:00 | 447            | oats_roe_id1         | AAP L           |
+>>>>>>> 034eb2c493cc943c6f71b860ed7003c81563ba74
       | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          |                 | 99900085       | 2014-06-03 09:00:00 | 447            | 1la707pq31347        | AAPL!           |
       | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | B               | 99900086       | 2014-06-03 09:00:00 | 447            | 1la707pq33906        | AAP@L           |
       | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | B               | 99900087       | 2014-06-03 09:00:00 | 447            | 1la707pq5820         | AAP#L           |
@@ -78,9 +98,42 @@ Feature: Generate staged data for details page for v7
       | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | B               | 1694342615563  | 2014-06-03 09:00:00 | 447            | 1la707pq33909        | AAP~L           |
       | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | SS              | 1694342589990  | 2014-06-03 09:00:00 | 447            | 1la707pq8336         | AAP`L           |
     And apply static data only when userId="filter2" and refId="100003"
+<<<<<<< HEAD
       | cmn_rec_type   | cmn_event_type_cd | cmn_issue_sym_id | cmn_mkt_class_cd | cmn_bd_nb | cmn_firm_mp_id | cmn_event_dt | cmn_event_tm            | cmn_event_qt | cmn_buy_sell_cd | eo_rec_unique_id                      | eo_orgnl_trade_dt | eo_order_rcvd_tm        | eo_issue_sym_id | eo_issue_id | eo_mkt_class_cd |
       | Exchange Order | OR                | AAPL             | NNM              | 29        | MLCO           | 2014-06-03   | 1970-01-01 11:52:31.123 | 800          | B               | J_2015-02-11_1D1KT401AHUU_EX_20062479 | 2014-06-03        | 1970-01-01 11:52:31.123 | AAPL%           | 8           | NNM             |
       | Exchange Order | OR                | AAPL             | NNM              | 29        | MLCO           | 2014-06-03   | 1970-01-01 11:52:31.123 | 800          | B               | J_2015-02-11_1D1KT401AHUU_EX_20062496 | 2014-06-03        | 1970-01-01 11:52:31.123 | AAPL%           | 8           | NNM             |
+=======
+      | cmn_rec_type   | cmn_event_type_cd | cmn_issue_sym_id | cmn_mkt_class_cd | cmn_bd_nb | cmn_firm_mp_id | cmn_event_dt | cmn_event_tm            | cmn_event_qt | cmn_buy_sell_cd | eo_rec_unique_id                      | eo_orgnl_trade_dt | eo_order_rcvd_tm        | eo_issue_sym_id | eo_issue_id | eo_mkt_class_cd | eo_event_type_cd |
+      | Exchange Order | OR                | AAPL             | NNM              | 29        | MLCO           | 2014-06-03   | 1970-01-01 11:52:31.123 | 800          | B               | J_2015-02-11_1D1KT401AHUU_EX_20062479 | 2014-06-03        | 1970-01-01 11:52:31.123 | AAPL%           | 8           | NNM             | OR               |
+      | Exchange Order | OR                | AAPL             | NNM              | 29        | MLCO           | 2014-06-03   | 1970-01-01 11:52:31.123 | 800          | B               | J_2015-02-11_1D1KT401AHUU_EX_20062496 | 2014-06-03        | 1970-01-01 11:52:31.123 | AAPL%           | 8           | NNM             | OR               |
+      | Exchange Order | AD                | AAPL             | NNM              | 29        | MLCO           | 2014-06-03   | 1970-01-01 11:52:31.123 | 800          | B               | J_2015-02-11_1D1KT401AHUU_EX_20062496 | 2014-06-03        | 1970-01-01 11:52:31.123 | AAPL%           | 8           | NNM             | AD               |
+      | Exchange Order | NW                | AAPL             | NNM              | 29        | MLCO           | 2014-06-03   | 1970-01-01 11:52:31.123 | 800          | B               | J_2015-02-11_1D1KT401AHUU_EX_20062496 | 2014-06-03        | 1970-01-01 11:52:31.123 | AAPL%           | 8           | NNM             | NW               |
+    And apply static data only when userId="filter2" and refId="100004"
+      | cmn_rec_type | cmn_event_type_cd | cmn_issue_sym_id | cmn_mkt_class_cd | cmn_bd_nb | cmn_firm_mp_id | cmn_event_dt | cmn_event_tm        | cmn_event_qt | cmn_buy_sell_cd | fo_oats_roe_id | fo_order_rcvd_dt    | fo_ns_cstmr_id | fo_rtd_shrs_qt | fo_issue_sym_id | fo_route_pr  | fo_firm_mp_id | fo_order_shrs_qt | fo_oats_orgng_order_oats_prcsg_dt | fo_oats_for_id |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          |                 | 99900057       | 2014-06-03 09:00:00 | 447            | 800            | AAPL            | 627.79000000 | MLCO          | 800              | 2014-06-03                        | 54392173       |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          |                 | 99900058       | 2014-06-03 09:00:00 | 447            | 800            | AAPL            | 625.70000000 | MLCO          | 800              | 2014-06-03                        | 54392173       |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          |                 | 99900059       | 2014-06-03 09:00:00 | 447            | 800            | AAPL            | 627.22000000 | MLCO          | 800              | 2014-06-03                        | 54392173       |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | B               | 99900060       | 2014-06-03 09:00:00 | 447            | 800            | AAPL            | 626.46000000 | MLCO          | 800              | 2014-06-03                        | 54392173       |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | B               | 99900061       | 2014-06-03 09:00:00 | 447            | 800            | AAPL            | 627.60000000 | MLCO          | 800              | 2014-06-03                        | 54392173       |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | B               | 99900062       | 2014-06-03 09:00:00 | 447            | 800            | AAPL            | 630.45000000 | MLCO          | 800              | 2014-06-03                        | 54392173       |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | B               | 99900063       | 2014-06-03 09:00:00 | 447            | 800            | AAPL            | 628.74000000 | MLCO          | 800              | 2014-06-03                        | 54392173       |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | SS              | 99900064       | 2014-06-03 09:00:00 | 447            | 800            | AAPL            | 628.36000000 | MLCO          | 800              | 2014-06-03                        | 54392173       |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | SS              | 99900065       | 2014-06-03 09:00:00 | 447            | 800            | AAPL            | 622.36000000 | MLCO          | 800              | 2014-06-03                        | 54392173       |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | SS              | 99900066       | 2014-06-03 09:00:00 | 447            | 800            | AAPL            | 622.36000000 | MLCO          | 800              | 2014-06-03                        | 54392173       |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | B               | 99900067       | 2014-06-03 09:00:00 | 447            | 800            | AAPL            | 622.36000000 | MLCO          | 800              | 2014-06-03                        | 54392173       |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | B               | 99900068       | 2014-06-03 09:00:00 | 447            | 800            | AAPL            | 622.36000000 | MLCO          | 800              | 2014-06-03                        | 54392173       |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | B               | 99900069       | 2014-06-03 09:00:00 | 447            | 800            | AAPL            | 622.36000000 | MLCO          | 800              | 2014-06-03                        | 54392173       |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | B               | 99900070       | 2014-06-03 09:00:00 | 447            | 800            | AAPL            | 622.36000000 | MLCO          | 800              | 2014-06-03                        | 54392173       |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | SS              | 99900071       | 2014-06-03 09:00:00 | 447            | 800            | AAPL            | 622.36000000 | MLCO          | 800              | 2014-06-03                        | 54392173       |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          | SS              | 99900072       | 2014-06-03 09:00:00 | 447            | 800            | AAPL            | 622.36000000 | MLCO          | 800              | 2014-06-03                        | 54392173       |
+      | Firm Order   | OR                | AAPL             | NNM              | 5608      | EWTT           | 2014-06-03   | 1970-01-01 09:00:00 | 100          | SS              | 99900073       | 2014-06-03 09:00:00 | 5608           | 800            | AAPL            | 622.36000000 | EWTT          | 800              | 2014-06-03                        | 54391106       |
+    And apply static data only when userId="filter2" and refId="100004"
+      | cmn_rec_type   | cmn_event_type_cd | cmn_issue_sym_id | cmn_mkt_class_cd | cmn_bd_nb | cmn_firm_mp_id | cmn_event_dt | cmn_event_tm            | cmn_event_qt | cmn_buy_sell_cd | eo_rec_unique_id                      | eo_orgnl_trade_dt | eo_order_rcvd_tm        | eo_issue_sym_id | eo_issue_id | eo_mkt_class_cd |
+      | Exchange Order | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 11:52:31.123 | 800          | B               | J_2015-02-11_1D1KT401AHUU_EX_20062479 | 2014-06-03        | 1970-01-01 11:52:31.123 | AAPL            | 8           | NNM             |
+    And apply static data only when userId="filter2" and refId="100005"
+      | cmn_rec_type | cmn_event_type_cd | cmn_issue_sym_id | cmn_mkt_class_cd | cmn_bd_nb | cmn_firm_mp_id | cmn_event_dt | cmn_event_tm        | cmn_event_qt | cmn_buy_sell_cd | fo_oats_roe_id | fo_order_rcvd_dt    | fo_ns_cstmr_id | fo_rtd_shrs_qt | fo_issue_sym_id | fo_route_pr  | fo_firm_mp_id | fo_order_shrs_qt | fo_oats_orgng_order_oats_prcsg_dt | fo_oats_for_id |
+      | Firm Order   | OR                | AAPL             | NNM              | 447       | MLCO           | 2014-06-03   | 1970-01-01 09:00:00 | 800          |                 | 99900057       | 2014-06-03 09:00:00 | 447            | 800            | AAPL            | 627.79000000 | MLCO          | 800              | 2014-06-03                        | 54392173       |
+>>>>>>> 034eb2c493cc943c6f71b860ed7003c81563ba74
     And generate mart config
     Then user track record should be populated
     And data mart table should be populated

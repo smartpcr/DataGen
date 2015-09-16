@@ -14,7 +14,7 @@ import java.util.*;
  * Created on 9/1/2015.
  */
 public class DisplayRuleUtil {
-	static final int LatestVersion = 8;
+	static final int LatestVersion = 9;
 	static final String sheetName = "Display and Mapping Rules";
 	private static Map<Integer, List<ColumnDisplayRule>> displayRulesByVersions = new HashMap<>();
 	private static Map<String, Field> fieldMappings;
