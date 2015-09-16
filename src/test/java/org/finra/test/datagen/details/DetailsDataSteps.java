@@ -35,7 +35,7 @@ public class DetailsDataSteps {
     private int recordCount;
     private String userId;
     private String refId;
-    private Date requestTime;
+    private DateTime requestTime;
 
     // tracking
     private String trackExcelFile;
@@ -75,7 +75,7 @@ public class DetailsDataSteps {
         this.recordCount = NameValuePair.getInt(pairs, "recordCount");
         this.userId = NameValuePair.getValue(pairs, "userId");
         this.refId = NameValuePair.getValue(pairs, "refId");
-        this.requestTime = (new DateTime()).withYear(2022).toDate();
+        this.requestTime = new DateTime().withYear(2022);
 
 		this.displayRules = DisplayRuleUtil.readDisplayRules(this.version);
 		this.copyValueHandlers = new HashMap<>();
@@ -114,7 +114,7 @@ public class DetailsDataSteps {
         UserMartTracking newTracking = new UserMartTracking();
         newTracking.rqst_user_id = this.userId;
         newTracking.user_rfrnc_id = this.refId;
-        newTracking.rqst_ts = StringFormat.formatDateTime(this.requestTime);
+        newTracking.rqst_ts = StringFormat.formatDateTime(this.requestTime.plusMinutes(1));
         newTracking.crit_from_dt=StringFormat.formatDate(this.range.getStartDate());
         newTracking.crit_to_dt=StringFormat.formatDate(this.range.getEndDate());
         newTracking.crit_from_tm=StringFormat.formatTime(this.range.getStartDate());
@@ -123,7 +123,7 @@ public class DetailsDataSteps {
         newTracking.crit_firm_mp_id = Joiner.on(',').join(this.range.getFirms());
         newTracking.crit_alt_rltd_firm = this.range.getRelatedFirms()?"Y":"N";
         newTracking.trckg_stts_cd="CMPLT";
-        newTracking.cmplt_ts= StringFormat.formatDateTime(new DateTime(this.requestTime).plusSeconds(10));
+        newTracking.cmplt_ts= StringFormat.formatDateTime(this.requestTime.plusSeconds(10));
         newTracking.user_mart_creat_job_id = "";
         newTracking.user_mart_tmplt_id = String.valueOf(this.version);
         newTracking.user_mart_tbl_nm = this.userId+"_"+this.refId;
