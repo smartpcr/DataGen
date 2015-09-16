@@ -92,4 +92,30 @@ public class DmApiSteps {
 			return null;
 		}
 	}
+
+	private void validateColumns(String tableName, List<Map<String, Object>> records) {
+		List<TableColumn> columns = getTableStructure(tableName);
+		int i = 0;
+		for(i=0;i<records.size();i++){
+			for(final String fieldName : records.get(i).keySet()) {
+				TableColumn columnFound = null;
+				try {
+					columnFound = Iterables.find(columns, new Predicate<TableColumn>() {
+						@Override
+						public boolean apply(TableColumn tableColumn) {
+							return tableColumn.name.equalsIgnoreCase(fieldName);
+						}
+					});
+				}
+				catch (Exception e){
+					columnFound = null;
+				}
+				assertNotNull("Unable to find column with name '" + fieldName +"'", columnFound);
+				Object fieldValue = records.get(i).get(fieldName);
+				if(fieldValue!=null){
+
+				}
+			}
+		}
+	}
 }

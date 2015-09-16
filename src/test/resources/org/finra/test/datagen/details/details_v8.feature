@@ -1,4 +1,4 @@
-@Details @Data
+@Details @Data @focus
 Feature: Generate staged data for details page for v8
 
   Scenario Template: stage test data for user mart
