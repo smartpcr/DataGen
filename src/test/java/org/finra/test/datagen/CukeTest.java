@@ -8,6 +8,6 @@ import org.junit.runner.RunWith;
  * Created on 9/9/2015.
  */
 @RunWith(Cucumber.class)
-@CucumberOptions(tags = {"~@ignore"})
+@CucumberOptions(tags = {"~@ignore", "@focus"})
 public class CukeTest {
 }
