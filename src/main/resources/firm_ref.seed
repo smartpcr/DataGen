@@ -1,0 +1,26 @@
+seed firm_ref in sawowner
+(
+	firm_mp_id VARCHAR(4),
+	efctv_dt DATE,
+	xprtn_dt DATE,
+	ns_cstmr_id INT,
+	cmpny_nm VARCHAR(70),
+	mpid_st VARCHAR(20),
+	rsn_cd VARCHAR(15),
+	creat_user_id VARCHAR(20),
+	creat_ts timestamp,
+	updt_user_id VARCHAR(20),
+	updt_ts timestamp,
+	mpid_nb BIGINT,
+	user_added_fl VARCHAR(1),
+	prtcp_type VARCHAR(1),
+	prmry_mp_id VARCHAR(4),
+	prmry_mpid_nb INT,
+	prmry_mp_id_efctv_dt DATE,
+	prmry_mp_id_xprtn_dt DATE,
+	mbr_st_cd VARCHAR(20),
+	mbr_st_efctv_dt DATE,
+	mbr_st_xprtn_dt DATE,
+	rec_load_dt DATE
+);
+
