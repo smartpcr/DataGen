@@ -169,7 +169,7 @@ public class ExcelUtil {
 		int sheetCount = workbook.getNumberOfSheets();
 		for(int i = 0; i < sheetCount; i++) {
 			Sheet sheet = workbook.getSheetAt(i);
-			if(sheet.getSheetName().equals(sheetName)){
+			if(sheet.getSheetName().equalsIgnoreCase(sheetName)){
 				if(createNew){
 					workbook.removeSheetAt(i);
 					sheet = workbook.createSheet(sheetName);

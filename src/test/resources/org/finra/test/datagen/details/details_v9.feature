@@ -36,7 +36,7 @@ Feature: Generate staged data for details page for v9
       | ConfigSheet    | <userId>_<refId>_dm    |
       | MartDataSource | mart                   |
       | MartSchemaName | sawmartowner           |
-      | MartTableName  | event_tmplt_v8         |
+      | MartTableName  | event_tmplt_v9         |
     When generate tracking data
     And generate tracking config
     And generate mart data
@@ -96,4 +96,4 @@ Feature: Generate staged data for details page for v9
       | AAPL   | NM03,HM04 | N          | 2014-06-25 | 11:00:00 | 2014-06-25 | 11:00:00 | 43       | fo,eo     | filter3      | 100007   | 919999999319    | 818888888319        | 717777777319           |
       | AAPL   | MICO,MLEX | Y          | 2014-01-20 | 00:00:00 | 2014-01-27 | 23:59:59 | 50       | fo,eo,oet | filter3      | 100008   | 919999999362    | 818888888362        | 717777777362           |
       | AAPL   | MICO,MLEX | Y          | 2014-01-20 | 00:00:00 | 2014-01-27 | 23:59:59 | 100      | fo,eo,oet | filter3      | 100009   | 919999999412    | 818888888412        | 717777777412           |
-      | AAPL   |           | N          | 2014-06-25 | 10:00:00 | 2014-06-25 | 10:00:00 | 27       | fo,eo     | Tst_Analyst1 | 1111112  | 919999999512    | 818888888512        | 717777777512           |
+      | AAPL   |           | N          | 2014-06-25 | 10:00:00 | 2014-06-25 | 10:00:00 | 27       | fo,eo     | tst_analyst1 | 1111112  | 919999999512    | 818888888512        | 717777777512           |

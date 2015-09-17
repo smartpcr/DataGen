@@ -2,10 +2,7 @@ package org.finra.test.datagen.util;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-<<<<<<< HEAD
-=======
 import org.finra.test.datagen.HandleCopyValue;
->>>>>>> 034eb2c493cc943c6f71b860ed7003c81563ba74
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
@@ -75,11 +72,7 @@ public class Records {
         return enumValues;
     }
 
-<<<<<<< HEAD
-	public static void applyChanges(Map<String, Object> subject, Map<String, Object> fromMap) {
-=======
 	public static void applyChanges(Map<String, Object> subject, Map<String, Object> fromMap, Map<String, HandleCopyValue> valueChangeHandlers) {
->>>>>>> 034eb2c493cc943c6f71b860ed7003c81563ba74
 		for(String key : subject.keySet()){
 			if(fromMap.containsKey(key)){
 				Object value = fromMap.get(key);
@@ -87,9 +80,6 @@ public class Records {
 					value = value.toString().replace("&gt;",">");
 				if(value!=null && value.toString().contains("&lt;"))
 					value = value.toString().replace("&lt;","<");
-<<<<<<< HEAD
-				subject.put(key, value);
-=======
 				Object oldValue = subject.get(key);
 				if(!oldValue.equals(value)) {
 					subject.put(key, value);
@@ -97,7 +87,6 @@ public class Records {
 						valueChangeHandlers.get(key).updateDependentFields(subject, value);
 					}
 				}
->>>>>>> 034eb2c493cc943c6f71b860ed7003c81563ba74
 			}
 		}
 	}

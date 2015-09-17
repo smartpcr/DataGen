@@ -8,14 +8,7 @@ import com.google.common.collect.Lists;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-<<<<<<< HEAD
-import org.finra.test.datagen.ColumnDisplayRule;
-import org.finra.test.datagen.DataGenerator;
-import org.finra.test.datagen.RecordType;
-import org.finra.test.datagen.TestDataRange;
-=======
 import org.finra.test.datagen.*;
->>>>>>> 034eb2c493cc943c6f71b860ed7003c81563ba74
 import org.finra.test.datagen.model.NameValuePair;
 import org.finra.test.datagen.track.UserMartTracking;
 import org.finra.test.datagen.util.*;
@@ -42,11 +35,7 @@ public class DetailsDataSteps {
     private int recordCount;
     private String userId;
     private String refId;
-<<<<<<< HEAD
-    private Date requestTime;
-=======
     private DateTime requestTime;
->>>>>>> 034eb2c493cc943c6f71b860ed7003c81563ba74
 
     // tracking
     private String trackExcelFile;
@@ -64,12 +53,9 @@ public class DetailsDataSteps {
 	private String martSchemaName;
 	private String martTableName;
 
-<<<<<<< HEAD
-=======
 	List<ColumnDisplayRule> displayRules;
 	private Map<String, HandleCopyValue> copyValueHandlers;
 
->>>>>>> 034eb2c493cc943c6f71b860ed7003c81563ba74
 	@Given("^search parameters$")
 	public void setupSearchParameters(List<NameValuePair> pairs) throws Throwable {
 		this.range = new TestDataRange()
@@ -89,9 +75,6 @@ public class DetailsDataSteps {
         this.recordCount = NameValuePair.getInt(pairs, "recordCount");
         this.userId = NameValuePair.getValue(pairs, "userId");
         this.refId = NameValuePair.getValue(pairs, "refId");
-<<<<<<< HEAD
-        this.requestTime = (new DateTime()).withYear(2022).toDate();
-=======
         this.requestTime = new DateTime().withYear(2022);
 
 		this.displayRules = DisplayRuleUtil.readDisplayRules(this.version);
@@ -102,7 +85,6 @@ public class DetailsDataSteps {
 				this.copyValueHandlers.put(displayRule.diverFieldName, copyHandler);
 			}
 		}
->>>>>>> 034eb2c493cc943c6f71b860ed7003c81563ba74
 	}
 
 	@Given("^user tracking record$")
@@ -132,11 +114,7 @@ public class DetailsDataSteps {
         UserMartTracking newTracking = new UserMartTracking();
         newTracking.rqst_user_id = this.userId;
         newTracking.user_rfrnc_id = this.refId;
-<<<<<<< HEAD
-        newTracking.rqst_ts = StringFormat.formatDateTime(this.requestTime);
-=======
         newTracking.rqst_ts = StringFormat.formatDateTime(this.requestTime.plusMinutes(1));
->>>>>>> 034eb2c493cc943c6f71b860ed7003c81563ba74
         newTracking.crit_from_dt=StringFormat.formatDate(this.range.getStartDate());
         newTracking.crit_to_dt=StringFormat.formatDate(this.range.getEndDate());
         newTracking.crit_from_tm=StringFormat.formatTime(this.range.getStartDate());
@@ -145,11 +123,7 @@ public class DetailsDataSteps {
         newTracking.crit_firm_mp_id = Joiner.on(',').join(this.range.getFirms());
         newTracking.crit_alt_rltd_firm = this.range.getRelatedFirms()?"Y":"N";
         newTracking.trckg_stts_cd="CMPLT";
-<<<<<<< HEAD
-        newTracking.cmplt_ts= StringFormat.formatDateTime(new DateTime(this.requestTime).plusSeconds(10));
-=======
         newTracking.cmplt_ts= StringFormat.formatDateTime(this.requestTime.plusSeconds(10));
->>>>>>> 034eb2c493cc943c6f71b860ed7003c81563ba74
         newTracking.user_mart_creat_job_id = "";
         newTracking.user_mart_tmplt_id = String.valueOf(this.version);
         newTracking.user_mart_tbl_nm = this.userId+"_"+this.refId;
@@ -217,12 +191,7 @@ public class DetailsDataSteps {
             assertNotNull(table);
             assertThat(table.size(), equalTo(this.recordCount));
 
-<<<<<<< HEAD
-	        List<ColumnDisplayRule> displayRules = DisplayRuleUtil.readDisplayRules(this.version);
-	        this.validateConcatenatedColumnSize(table, displayRules);
-=======
 	        this.validateConcatenatedColumnSize(table, this.displayRules);
->>>>>>> 034eb2c493cc943c6f71b860ed7003c81563ba74
 	        String excelFilePath = "out/" + this.martExcelFile;
 	        ExcelUtil.writeSheet(excelFilePath, this.martSheet, table);
         }
@@ -244,11 +213,7 @@ public class DetailsDataSteps {
 					String recordType = Records.getValue(records.get(staticDataIdx), "cmn_rec_type");
 					String recordType2 = Records.getValue(table.get(tableRowIx), "cmn_rec_type");
 					if(recordType.equalsIgnoreCase(recordType2)) {
-<<<<<<< HEAD
-						Records.applyChanges(table.get(tableRowIx), records.get(staticDataIdx));
-=======
 						Records.applyChanges(table.get(tableRowIx), records.get(staticDataIdx), this.copyValueHandlers);
->>>>>>> 034eb2c493cc943c6f71b860ed7003c81563ba74
 						staticDataIdx++;
 						tableRowIx++;
 						rowsUpdated++;
