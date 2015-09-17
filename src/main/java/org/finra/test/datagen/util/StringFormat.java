@@ -12,6 +12,7 @@ import java.util.Date;
  * Created by xiaodongli on 9/9/15.
  */
 public class StringFormat {
+    //region dateonly
     public static String formatDate(String value) {
         String datePattern= "yyyy-MM-dd";
         if(value.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$")){
@@ -51,9 +52,20 @@ public class StringFormat {
         else if(value.matches("^\\d{1,2}/\\d{1,2}/\\d{4}$")){
             datePattern= "MM/dd/yyyy";
         }
-        return DateTime.parse(value, DateTimeFormat.forPattern(datePattern)).toDate();
+        try {
+            return DateTime.parse(value, DateTimeFormat.forPattern(datePattern)).toDate();
+        }
+        catch (Throwable ignored) {
+            return null;
+        }
     }
 
+    public static Date getDate(Object value) {
+        return value==null? null: getDate(value.toString());
+    }
+    //endregion
+
+    //region timeonly
     public static String formatTime(String value) {
         String timePattern= "HH:mm:ss";
         String datePattern= "yyyy/MM/dd";
@@ -80,6 +92,9 @@ public class StringFormat {
         return date.toString("HH:mm:ss");
     }
 
+    //endregion
+
+    //region timestamp
     public static String formatTimestamp(String value) {
         String timePattern= "HH:mm:ss";
         String datePattern= "yyyy/MM/dd";
@@ -105,7 +120,9 @@ public class StringFormat {
     public static String formatTimestamp(DateTime date) {
         return date.toString("yyyy/MM/dd HH:mm:ss");
     }
+    //endregion
 
+    //region datetime
     public static String formatDateTime(String value) {
         String timePattern= "HH:mm:ss";
         String datePattern= "yyyy-MM-dd";
@@ -147,9 +164,20 @@ public class StringFormat {
         else if(value.matches("^\\d{1,2}/\\d{1,2}/\\d{4}.*")){
             datePattern= "MM/dd/yyyy";
         }
-        return DateTime.parse(value, DateTimeFormat.forPattern(datePattern+" "+timePattern)).toDate();
+        try {
+            return DateTime.parse(value, DateTimeFormat.forPattern(datePattern + " " + timePattern)).toDate();
+        }
+        catch (Throwable ignored){
+            return null;
+        }
     }
 
+    public static Date getDateTime(Object value) {
+        return value==null? null : getDateTime(value.toString());
+    }
+    //endregion
+
+    //region number
     public static String formatNumber(int value) {
         return NumberFormat.getCurrencyInstance().format(value);
     }
@@ -178,4 +206,5 @@ public class StringFormat {
         }
         return NumberFormat.getCurrencyInstance().format(value);
     }
+    //endregion
 }

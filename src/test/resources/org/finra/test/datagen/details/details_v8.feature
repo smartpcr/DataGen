@@ -4,7 +4,7 @@ Feature: Generate staged data for details page for v8
 
   @ignore
 =======
-@Details @Data @focus
+@Details @Data
 Feature: Generate staged data for details page for v8
 
 >>>>>>> 034eb2c493cc943c6f71b860ed7003c81563ba74

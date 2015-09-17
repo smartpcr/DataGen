@@ -1,4 +1,4 @@
-@OET @OrdersDetails
+@OET @OrdersDetails @focus
 Feature: OET detail DM API Tests
 
   Background:

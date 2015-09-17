@@ -1,5 +1,8 @@
 package org.finra.test.datagen;
 
+import com.google.common.base.Preconditions;
+import org.finra.test.datagen.util.StringFormat;
+
 /**
  * Created on 9/1/2015.
  */
@@ -36,5 +39,45 @@ public enum DbType {
 
     public boolean needsEscape() {
         return this==DbType.Date || this == DbType.Timestamp || this==DbType.Varchar;
+    }
+
+    public static boolean assignableFrom(DbType dbType, int size, Object fieldValue) {
+        Preconditions.checkNotNull(fieldValue);
+        switch (dbType) {
+            case BigInt:
+                if(fieldValue.toString().matches("\\d+")) {
+                    try{
+                        Long.parseLong(fieldValue.toString());
+                        return true;
+                    }
+                    catch (Throwable ignored){}
+                }
+                return false;
+            case Date:
+                return StringFormat.getDate(fieldValue)!=null;
+            case Int:
+                if(fieldValue.toString().matches("\\d+")){
+                    try {
+                        Integer.parseInt(fieldValue.toString());
+                        return true;
+                    }
+                    catch (Throwable ignored){}
+                }
+                return false;
+            case Timestamp:
+                return StringFormat.getDateTime(fieldValue)!=null;
+            case Decimal:
+                if(fieldValue.toString().matches("[0-9]{0,10}\\.?[0-9]{0,8}")){
+                    try {
+                        Double.parseDouble(fieldValue.toString());
+                        return true;
+                    }catch (Throwable ignored){}
+                }
+                return false;
+            case Varchar:
+                return fieldValue.toString().length()<=size;
+            default:
+                return false;
+        }
     }
 }
