@@ -1,15 +1,11 @@
 package org.finra.test.datagen.util;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import org.finra.test.datagen.HandleCopyValue;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.springframework.util.LinkedCaseInsensitiveMap;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by xiaodongli on 9/9/15.
@@ -19,7 +15,6 @@ public class Records {
         Object value = record.containsKey(fieldName)? record.get(fieldName): null;
         return value==null? null: value.toString().trim();
     }
-
 
     public static String[] getValues(Map<String, Object> record, final String fieldName) {
         String value = getValue(record, fieldName);
@@ -90,4 +85,159 @@ public class Records {
 			}
 		}
 	}
+
+    public static List<LinkedCaseInsensitiveMap<Object>> union(List<LinkedCaseInsensitiveMap<Object>> table1, List<LinkedCaseInsensitiveMap<Object>> table2) {
+        for(LinkedCaseInsensitiveMap<Object> newRec : table2){
+            boolean foundMatch = false;
+            for(LinkedCaseInsensitiveMap<Object> existingRec : table1) {
+                boolean matchAllField = newRec.size() > 0;
+                if(matchAllField){
+                    for(String fieldName : newRec.keySet()) {
+                        if (!existingRec.containsKey(fieldName)) {
+                            matchAllField = false;
+                            break;
+                        }
+
+                        Object fieldValue = newRec.get(fieldName);
+                        if(fieldValue==null || fieldValue.toString().equals("")){
+                            if(existingRec.get(fieldName) !=null && !existingRec.get(fieldName).toString().equals("")){
+                                matchAllField = false;
+                                break;
+                            }
+                            else {
+                                continue;
+                            }
+                        }
+                        if(existingRec.get(fieldName) !=null && !existingRec.get(fieldName).equals(fieldValue)){
+                            matchAllField = false;
+                            break;
+                        }
+                    }
+                }
+                if(matchAllField){
+                    foundMatch = true;
+                    break;
+                }
+            }
+            if(!foundMatch) {
+                table1.add(newRec);
+            }
+        }
+        return table1;
+    }
+
+    public static List<LinkedCaseInsensitiveMap<Object>> intercept(List<LinkedCaseInsensitiveMap<Object>> table1, List<LinkedCaseInsensitiveMap<Object>> table2) {
+        List<LinkedCaseInsensitiveMap<Object>> commonRecords = new LinkedList<>();
+        for(LinkedCaseInsensitiveMap<Object> existingRec : table1) {
+            boolean foundMatch = false;
+            for(LinkedCaseInsensitiveMap<Object> newRec : table2) {
+                boolean matchAllField = newRec.size() > 0;
+                if(matchAllField){
+                    for(String fieldName : newRec.keySet()) {
+                        if (!existingRec.containsKey(fieldName)) {
+                            matchAllField = false;
+                            break;
+                        }
+
+                        Object fieldValue = newRec.get(fieldName);
+                        if(fieldValue==null || fieldValue.toString().equals("")){
+                            if(existingRec.get(fieldName) !=null && !existingRec.get(fieldName).toString().equals("")){
+                                matchAllField = false;
+                                break;
+                            }
+                            else {
+                                continue;
+                            }
+                        }
+                        if(existingRec.get(fieldName) !=null && !existingRec.get(fieldName).equals(fieldValue)){
+                            matchAllField = false;
+                            break;
+                        }
+                    }
+                }
+                if(matchAllField){
+                    foundMatch = true;
+                    break;
+                }
+            }
+            if(foundMatch) {
+                commonRecords.add(existingRec);
+            }
+        }
+        return commonRecords;
+    }
+
+    public static List<LinkedCaseInsensitiveMap<Object>> except(List<LinkedCaseInsensitiveMap<Object>> table1, List<LinkedCaseInsensitiveMap<Object>> table2) {
+        List<LinkedCaseInsensitiveMap<Object>> leftOver = new LinkedList<>();
+        for(LinkedCaseInsensitiveMap<Object> existingRec : table1) {
+            boolean foundMatch = false;
+            for(LinkedCaseInsensitiveMap<Object> newRec : table2) {
+                boolean matchAllField = newRec.size() > 0;
+                if(matchAllField){
+                    for(String fieldName : newRec.keySet()) {
+                        if (!existingRec.containsKey(fieldName)) {
+                            matchAllField = false;
+                            break;
+                        }
+
+                        Object fieldValue = newRec.get(fieldName);
+                        if(fieldValue==null || fieldValue.toString().equals("")){
+                            if(existingRec.get(fieldName) !=null && !existingRec.get(fieldName).toString().equals("")){
+                                matchAllField = false;
+                                break;
+                            }
+                            else {
+                                continue;
+                            }
+                        }
+                        if(existingRec.get(fieldName) !=null && !existingRec.get(fieldName).equals(fieldValue)){
+                            matchAllField = false;
+                            break;
+                        }
+                    }
+                }
+                if(matchAllField){
+                    foundMatch = true;
+                    break;
+                }
+            }
+            if(!foundMatch) {
+                leftOver.add(existingRec);
+            }
+        }
+
+        return leftOver;
+    }
+
+    public static LinkedCaseInsensitiveMap<Object> toCaseInsensitiveMap(Map<String, Object> map) {
+        LinkedCaseInsensitiveMap<Object> newMap = new LinkedCaseInsensitiveMap<>();
+        for(String key : map.keySet()){
+            newMap.put(key, map.get(key));
+        }
+        return newMap;
+    }
+
+    public static List<LinkedCaseInsensitiveMap<Object>> toCaseInsensitiveRecords(List<Map<String, Object>> records) {
+        List<LinkedCaseInsensitiveMap<Object>> newRecords = new LinkedList<>();
+        for(Map<String, Object> rec : records) {
+            newRecords.add(toCaseInsensitiveMap(rec));
+        }
+        return newRecords;
+    }
+
+    public static Map<String, Object> toMap(LinkedCaseInsensitiveMap<Object> map) {
+        Map<String, Object> newMap = new LinkedHashMap<>();
+        for(String key : map.keySet()){
+            newMap.put(key, map.get(key));
+        }
+        return newMap;
+    }
+
+    public static List<Map<String, Object>> toRecords(List<LinkedCaseInsensitiveMap<Object>> records) {
+        List<Map<String, Object>> newRecords = new LinkedList<>();
+        for(LinkedCaseInsensitiveMap<Object> rec : records) {
+            newRecords.add(toMap(rec));
+        }
+        return newRecords;
+    }
 }

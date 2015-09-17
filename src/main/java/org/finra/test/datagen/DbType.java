@@ -45,7 +45,7 @@ public enum DbType {
         Preconditions.checkNotNull(fieldValue);
         switch (dbType) {
             case BigInt:
-                if(fieldValue.toString().matches("\\d+")) {
+                if(fieldValue.toString().matches("\\-?\\d+")) {
                     try{
                         Long.parseLong(fieldValue.toString());
                         return true;
@@ -56,7 +56,7 @@ public enum DbType {
             case Date:
                 return StringFormat.getDate(fieldValue)!=null;
             case Int:
-                if(fieldValue.toString().matches("\\d+")){
+                if(fieldValue.toString().matches("\\-?\\d+")){
                     try {
                         Integer.parseInt(fieldValue.toString());
                         return true;

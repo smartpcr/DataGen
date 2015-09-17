@@ -15,9 +15,13 @@ public class ExcelUtil {
 	public static List<Map<String,Object>> readSheetAsTable(String filePath, String sheetName)
 		throws IOException, InvalidFormatException {
 		File file = new File(filePath);
+        if(!file.exists())
+            return null;
 		InputStream inputStream = new FileInputStream(file);
 		Workbook workbook = WorkbookFactory.create(inputStream);
 		Sheet sheet = workbook.getSheet(sheetName);
+        if(sheet==null)
+            return null;
 		Map<String, Integer> columnHeaderIndexes = new LinkedHashMap<>();
 		Row headerRow = sheet.getRow(0);
 		int cellIndex = 0;

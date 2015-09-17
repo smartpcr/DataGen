@@ -9,9 +9,11 @@ import cucumber.api.java.en.When;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.finra.test.datagen.DbType;
 import org.finra.test.datagen.model.ExcelRecord;
+import org.finra.test.datagen.model.Search;
 import org.finra.test.datagen.schema.SeedFileParser;
 import org.finra.test.datagen.util.ExcelUtil;
 import org.finra.test.datagen.util.PropertyReader;
+import org.finra.test.datagen.util.Records;
 import org.finra.test.datagen.util.TableColumn;
 
 import java.io.IOException;
@@ -33,7 +35,7 @@ public class DmApiSteps {
 	}
 
 	@Given("^records in '(\\w+)'(.*)$")
-	public void ensureDataInOetOrders(final String tableName, List<Map<String, Object>> records)
+	public void ensureRecordsInTable(final String tableName, String description, List<Map<String, Object>> records)
 		throws IllegalAccessException, IOException, InvalidFormatException, SQLException {
 
 		Preconditions.checkNotNull(tableName);
@@ -86,11 +88,18 @@ public class DmApiSteps {
 		assertNotNull(excelRecord);
 
         String excelFilePath = "out/"+excelRecord.excelFile;
-        ExcelUtil.writeSheet(excelFilePath, excelRecord.sheetName, table);
+        List<Map<String, Object>> existingTable = ExcelUtil.readSheetAsTable(excelFilePath, excelRecord.sheetName);
+        if(existingTable!=null && existingTable.size()>0) {
+            table = Records.toRecords(Records.union(Records.toCaseInsensitiveRecords(existingTable), Records.toCaseInsensitiveRecords(table)));
+            ExcelUtil.writeSheet(excelFilePath, excelRecord.sheetName, table);
+        }
+        else {
+            ExcelUtil.writeSheet(excelFilePath, excelRecord.sheetName, table);
+        }
 	}
 
     @Given("^records NOT in '(\\w+)'$")
-    public void ensureDataNotExist(final String tableName, List<Map<String, Object>> records){
+    public void ensureRecordsNotExistInTable(final String tableName, List<Map<String, Object>> records){
 	    Preconditions.checkNotNull(tableName);
 	    Preconditions.checkArgument(records != null && records.size() > 0);
         validateColumns(tableName, records);
@@ -151,7 +160,7 @@ public class DmApiSteps {
     }
 
     @When("^Run DM API query.*")
-    public void runDmApiQuery() {
+    public void runDmApiQuery(List<Search> searches) {
 
     }
 
@@ -163,7 +172,8 @@ public class DmApiSteps {
 	private List<TableColumn> getTableStructure(String tableName) {
 		String seedFileName = PropertyReader.get(tableName+".seed");
 		try {
-			return SeedFileParser.parseSeedFile(seedFileName);
+            String seedFilePath = SeedFileParser.class.getClassLoader().getResource(seedFileName).getFile();
+			return SeedFileParser.parseSeedFile(seedFilePath);
 		} catch (IOException e) {
 			fail(e.getMessage());
 			return null;
@@ -189,7 +199,8 @@ public class DmApiSteps {
                 assertNotNull("Unable to find column with name '" + fieldName + "'", columnFound);
                 Object fieldValue = records.get(i).get(fieldName);
                 if (fieldValue != null) {
-                    assertTrue(DbType.assignableFrom(columnFound.dbType, columnFound.size, fieldValue));
+                    assertTrue("value " + fieldValue + " cannot be assigned to field " + fieldName + " with data type " + columnFound.dbType,
+                        DbType.assignableFrom(columnFound.dbType, columnFound.size, fieldValue));
                     if(columnFound.dbType== DbType.Varchar) {
                         assertTrue("Row " + i + ", column " + fieldName+ " data type not match or size too large",
                             fieldValue.toString().length()<=columnFound.size);
