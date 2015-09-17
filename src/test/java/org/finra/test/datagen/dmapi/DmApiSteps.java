@@ -17,6 +17,7 @@ import org.finra.test.datagen.util.Records;
 import org.finra.test.datagen.util.TableColumn;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -28,6 +29,12 @@ import static org.junit.Assert.*;
  */
 public class DmApiSteps {
 	private List<ExcelRecord> excelRecords;
+	private int version;
+
+	@Given("^version (\\d+)$")
+	public void setupVersion(int version) {
+		this.version = version;
+	}
 
 	@Given("^output excel file paths$")
 	public void setupExcelOutput(List<ExcelRecord> excelRecords) {
@@ -170,8 +177,10 @@ public class DmApiSteps {
     }
 
 	private List<TableColumn> getTableStructure(String tableName) {
-		String seedFileName = PropertyReader.get(tableName+".seed");
+		String seedFileName ="seed_v"+this.version+"/"+  tableName+".seed";
 		try {
+			URL seedFileUrl = SeedFileParser.class.getClassLoader().getResource(seedFileName);
+			assertNotNull("seed file does not exist " + seedFileName, seedFileUrl);
             String seedFilePath = SeedFileParser.class.getClassLoader().getResource(seedFileName).getFile();
 			return SeedFileParser.parseSeedFile(seedFilePath);
 		} catch (IOException e) {

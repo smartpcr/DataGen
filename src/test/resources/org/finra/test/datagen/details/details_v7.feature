@@ -34,9 +34,7 @@ Feature: Generate staged data for details page for v7
       | ExcelFile      | filter_N-2_testdata.xlsx |
       | DataSheet      | <userId>_<refId>         |
       | ConfigSheet    | <userId>_<refId>_dm      |
-      | MartDataSource | mart                     |
-      | MartSchemaName | sawmartowner             |
-      | MartTableName  | event_tmplt_v7           |
+
     When generate tracking data
     And generate tracking config
     And generate mart data

@@ -10,6 +10,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.finra.test.datagen.*;
 import org.finra.test.datagen.model.NameValuePair;
+import org.finra.test.datagen.schema.SeedFileParser;
 import org.finra.test.datagen.track.UserMartTracking;
 import org.finra.test.datagen.util.*;
 import org.joda.time.DateTime;
@@ -17,6 +18,7 @@ import org.joda.time.Days;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.*;
@@ -49,9 +51,9 @@ public class DetailsDataSteps {
     private String martExcelFile;
     private String martSheet;
     private String martConfigSheet;
-	private String martDataSourceName;
-	private String martSchemaName;
-	private String martTableName;
+//	private String martDataSourceName;
+//	private String martSchemaName;
+//	private String martTableName;
 
 	List<ColumnDisplayRule> displayRules;
 	private Map<String, HandleCopyValue> copyValueHandlers;
@@ -102,9 +104,9 @@ public class DetailsDataSteps {
         this.martExcelFile = NameValuePair.getValue(pairs, "excelFile");
         this.martSheet = NameValuePair.getValue(pairs, "dataSheet");
         this.martConfigSheet = NameValuePair.getValue(pairs, "configSheet");
-		this.martDataSourceName = NameValuePair.getValue(pairs, "martDataSource");
-		this.martSchemaName = NameValuePair.getValue(pairs, "martSchemaName");
-		this.martTableName = NameValuePair.getValue(pairs, "martTableName");
+//		this.martDataSourceName = NameValuePair.getValue(pairs, "martDataSource");
+//		this.martSchemaName = NameValuePair.getValue(pairs, "martSchemaName");
+//		this.martTableName = NameValuePair.getValue(pairs, "martTableName");
 	}
 
     @When("^generate tracking data$")
@@ -234,7 +236,9 @@ public class DetailsDataSteps {
 	@When("^generate mart config.*$")
 	public void generateMartConfig() {
 		try {
-			List<TableColumn> columns = DbBackup.getTableColumns(this.martDataSourceName, this.martSchemaName, this.martTableName);
+			URL seedfileUrl = SeedFileParser.class.getClassLoader().getResource("seed_v"+this.version+"/event_tmplt.seed");
+			assertNotNull(seedfileUrl);
+			List<TableColumn> columns = SeedFileParser.parseSeedFile(seedfileUrl.getFile());
 			List<Map<String, Object>> configData = new LinkedList<>();
 			for(TableColumn column : columns) {
 				if(column.name.equalsIgnoreCase("mart_row_id"))

@@ -1,13 +1,14 @@
-@OET @OrdersDetails @focus
+@OET @OrdersDetails
 Feature: OET detail DM API Tests
 
   Background:
+    Given version 9
     Given output excel file paths
       | TableName        | ExcelFile  | SheetName        |
       | firm_ref         | ref.xlsx   | firm_ref         |
       | issue_ref        | ref.xlsx   | issue_ref        |
       | new_orders       | dmapi.xlsx | new_orders       |
-      | processed_orders | dmapi.xlsx | processed_orders |
+      | process_orders | dmapi.xlsx | process_orders |
       | ned_orders       | dmapi.xlsx | ned_orders       |
       | oet_orders       | dmapi.xlsx | oet_orders       |
 
@@ -36,7 +37,7 @@ Feature: OET detail DM API Tests
     Given records in 'new_orders'
       | oats_roe_id  | issue_sym_id | event_ts            | firm_mp_id |
       | 999999999013 | OET1         | 2015-01-28 11:00:00 | OETA       |
-    And records in 'processed_orders'
+    And records in 'process_orders'
       | oats_roe_id  | issue_sym_id | event_ts            | firm_mp_id |
       | 999999998012 | OET2         | 2015-01-28 11:00:00 | OETB       |
     And records in 'ned_orders'

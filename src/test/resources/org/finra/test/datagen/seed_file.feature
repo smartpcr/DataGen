@@ -2,6 +2,7 @@
 Feature: can parse feature file
 
   Scenario: can read new orders seed file
+    Given version 9
     Given a seed file with name "new_orders.seed"
     When parse seed file
     Then I should get 124 table columns

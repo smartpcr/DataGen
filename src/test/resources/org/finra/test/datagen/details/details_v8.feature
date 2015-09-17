@@ -1,4 +1,4 @@
-@Details @Data
+@Details @Data @focus
 Feature: Generate staged data for details page for v8
 
   Scenario Template: stage test data for user mart
@@ -34,9 +34,7 @@ Feature: Generate staged data for details page for v8
       | ExcelFile      | filter_N-1_testdata.xlsx |
       | DataSheet      | <userId>_<refId>         |
       | ConfigSheet    | <userId>_<refId>_dm      |
-      | MartDataSource | mart                     |
-      | MartSchemaName | sawmartowner             |
-      | MartTableName  | event_tmplt_v8           |
+
     When generate tracking data
     And generate tracking config
     And generate mart data

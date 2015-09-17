@@ -22,13 +22,13 @@ import static org.junit.Assert.fail;
 /**
  * Created on 9/16/2015.
  */
-public class ParseSeedFileSteps {
+public class ParseSeedFileSteps  {
 	private String seedFilePath;
 	private List<TableColumn> columns;
 
 	@Given("^a seed file with name \"(.+)\"$")
 	public void setupSeedFile(String seedFileName) {
-		URL fileUrl = TableColumn.class.getClassLoader().getResource(seedFileName);
+		URL fileUrl = TableColumn.class.getClassLoader().getResource("seed_v9/"+ seedFileName);
 		Preconditions.checkNotNull(fileUrl);
 		this.seedFilePath = fileUrl.getFile();
 	}
