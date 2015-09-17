@@ -32,7 +32,7 @@ Feature: OET detail DM API Tests
       | OETE       | 2015-08-01 | 2049-07-31 | 98765005    | OET Firm E | 98765005 | Tester        | 2015-09-08 11:11:11 |
 
   @OrdersDetails @OET @AllRecordTypes
-  Scenario: Make sure fields from all record types are included (cmn, fo, eo, oet)
+  Scenario: Make sure fields from all record types are included
     Given records in 'new_orders'
       | oats_roe_id  | issue_sym_id | event_ts            | firm_mp_id |
       | 999999999013 | OET1         | 2015-01-28 11:00:00 | OETA       |
